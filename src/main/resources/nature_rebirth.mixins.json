@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "org.gloomybanana.nature_rebirth.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "LavaFluidMixin",
+    "LiquidBlockMixin",
+    "ProjectileMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

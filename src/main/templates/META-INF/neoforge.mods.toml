@@ -1,0 +1,52 @@
+license="${mod_license}"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+logoFile="logo.png"
+credits="Nature Rebirth Team"
+authors="gloomybanana"
+
+description='''
+Nature Rebirth - 自然重生
+
+让Minecraft中那些不可再生资源变得可量产
+
+【核心功能】
+• 方解石生成：岩浆在骨块上方流动且相邻蓝冰时转化为方解石
+• 凝灰岩生成：岩浆在安山岩上方流动且相邻蓝冰时转化为凝灰岩
+• 滴水石生成：岩浆在花岗岩上方流动且相邻蓝冰时转化为滴水石
+• 下界岩生成：岩浆周围同时存在蓝冰和岩浆块时转化为下界岩
+• 深板岩生成：Y坐标低于阈值时，岩浆遇水生成深板岩变种
+
+【信标增强】
+在生成位置下方放置信标，有概率生成稀有矿石：
+• 石头/深板岩：煤矿石、铁矿石、红石矿石、青金石矿石、金矿石、绿宝石矿石、钻石矿石
+• 下界岩：下界石英矿石、下界金矿石、远古残骸
+
+【其他功能】
+• 鸡蛋机制：向生命值为1的生物投掷鸡蛋会击杀并掉落生怪蛋
+• 自定义规则：通过配置文件添加自定义方块生成规则
+• JEI支持：在JEI中查看所有方块的获取方式
+
+【配置文件】
+所有功能均可通过配置文件自定义，包括矿石生成概率、生成开关等。
+'''
+
+[[mixins]]
+config="${mod_id}.mixins.json"
+
+[[dependencies.${mod_id}]]
+    modId="neoforge"
+    type="required"
+    versionRange="[${neo_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"

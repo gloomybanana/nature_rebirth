@@ -1,0 +1,13 @@
+{
+  "itemGroup.nature_rebirth": "Example Mod Tab",
+  "block.nature_rebirth.example_block": "Example Block",
+  "item.nature_rebirth.example_item": "Example Item",
+
+  "nature_rebirth.configuration.title": "Nature Rebirth Configs",
+  "nature_rebirth.configuration.section.nature_rebirth.common.toml": "Nature Rebirth Configs",
+  "nature_rebirth.configuration.section.nature_rebirth.common.toml.title": "Nature Rebirth Configs",
+  "nature_rebirth.configuration.items": "Item List",
+  "nature_rebirth.configuration.logDirtBlock": "Log Dirt Block",
+  "nature_rebirth.configuration.magicNumberIntroduction": "Magic Number Text",
+  "nature_rebirth.configuration.magicNumber": "Magic Number"
+}

@@ -1,0 +1,43 @@
+CC0 1.0 Universal
+
+Statement of Purpose
+
+The laws of most jurisdictions throughout the world automatically confer exclusive Copyright and Related Rights (defined below) upon the contributor and/or others who copy, modify, publish or otherwise distribute the Work, either in its current form or in any modified version.
+
+NO COPYRIGHT
+
+The person who associated a work with this deed has dedicated the work to the public domain by waiving all of their rights to the work worldwide under copyright law, including all related and neighboring rights, to the extent allowed by law.
+
+You can copy, modify, distribute and perform the work, even for commercial purposes, all without asking permission. See the full legal text below.
+
+Full Legal Text
+
+CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE LEGAL SERVICES. DISTRIBUTION OF THIS DEED DOES NOT CREATE AN ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS INFORMATION AS-IS. CREATIVE COMMONS DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+The legal tool is a dedication to the public domain. Creative Commons does not license the Work. Creative Commons has no authority over this dedication and cannot change its terms in any way.
+
+To the extent possible under law, the person who associated the Work with this deed has waived all copyright and related or neighboring rights to the Work.
+
+You should have received a copy of the CC0 legal code along with this work. If not, see <https://creativecommons.org/publicdomain/zero/1.0/>.
+
+TERMS AND CONDITIONS
+
+1. Definitions
+
+"Work" refers to the material (including, without limitation, software, documents, text, photographs, images, graphics, audio-visual works, and other creative content) made available under this dedication.
+
+"You" means the individual or entity exercising the rights under this dedication.
+
+"Public Interest" means the general benefit of the public at large.
+
+2. Waiver
+
+To the greatest extent permitted by, but not in contravention of, applicable law, the person who associated the Work with this dedication hereby offers to the user of the Work a worldwide, royalty-free, non-sublicensable, non-exclusive, irrevocable license to exercise the rights in the Work for any and all purposes, including the rights to use, copy, modify, publish, and distribute the Work, in any medium and for any purpose (including commercial purposes), subject to the provisions of this dedication.
+
+3. Public License Fallback
+
+Should any part of the waiver provided for above be invalid or unenforceable under applicable law, the rights granted to you hereunder shall be amended to the minimum extent necessary to make them valid and enforceable. Where the waiver fails, the rights granted to you hereunder shall be amended to the minimum extent necessary to make them valid and enforceable, subject to the provisions of this dedication.
+
+4. No endorsement
+
+Nothing in this dedication constitutes or may be construed as permission to assert or imply that You are, or that Your use of the Work is, connected to, or sponsored, endorsed, or granted official status by, Creative Commons or any other party associated with Creative Commons.
