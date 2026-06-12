@@ -137,6 +137,30 @@ public class NatureRebirthJeiPlugin implements IModPlugin {
         addOreInfo(registration, Blocks.NETHER_QUARTZ_ORE, "下界石英矿石", "下界");
         addOreInfo(registration, Blocks.NETHER_GOLD_ORE, "下界金矿石", "下界");
         addOreInfo(registration, Blocks.ANCIENT_DEBRIS, "远古残骸", "下界");
+        
+        // 龙息获取方式
+        List<Component> dragonBreathDesc = new ArrayList<>();
+        dragonBreathDesc.add(Component.literal("§6合成获取："));
+        dragonBreathDesc.add(Component.literal("§7将龙首和玻璃瓶放入合成台"));
+        dragonBreathDesc.add(Component.literal("§7龙首不消耗，每个玻璃瓶产出1瓶龙息"));
+        
+        registration.addIngredientInfo(
+                new ItemStack(net.minecraft.world.item.Items.DRAGON_BREATH),
+                VanillaTypes.ITEM_STACK,
+                dragonBreathDesc.toArray(new Component[0])
+        );
+        
+        // 龙首信息
+        List<Component> dragonHeadDesc = new ArrayList<>();
+        dragonHeadDesc.add(Component.literal("§6可用于合成龙息："));
+        dragonHeadDesc.add(Component.literal("§7与玻璃瓶在合成台中合成"));
+        dragonHeadDesc.add(Component.literal("§7龙首不消耗"));
+        
+        registration.addIngredientInfo(
+                new ItemStack(net.minecraft.world.item.Items.DRAGON_HEAD),
+                VanillaTypes.ITEM_STACK,
+                dragonHeadDesc.toArray(new Component[0])
+        );
     }
     
     private void addOreInfo(IRecipeRegistration registration, Block ore, String name, String type) {
