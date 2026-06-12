@@ -5,8 +5,7 @@
   "mixins": [
     "LavaFluidMixin",
     "LiquidBlockMixin",
-    "ProjectileMixin",
-    "CraftingResultSlotMixin"
+    "ProjectileMixin"
   ],
   "injectors": {
     "defaultRequire": 1
