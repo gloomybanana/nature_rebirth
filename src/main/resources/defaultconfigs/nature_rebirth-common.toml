@@ -1,0 +1,45 @@
+# Nature Rebirth Configuration
+
+# Deepslate Y threshold
+# Y coordinate threshold for generating deepslate variants instead of cobblestone/stone
+# When lava meets water below this Y level, it will generate deepslate variants
+# Default: 0
+deepslateYThreshold = 0
+
+# Feature toggles
+# Enable calcite generation when lava flows above bone block and adjacent to blue ice
+calciteGeneration = true
+
+# Enable tuff generation when lava flows above andesite and adjacent to blue ice
+tuffGeneration = true
+
+# Enable netherrack generation when lava is surrounded by both blue ice and magma blocks
+netherrackGeneration = true
+
+# Enable dripstone generation when lava flows above granite and adjacent to blue ice
+dripstoneGeneration = true
+
+# Enable egg spawn mechanism: throwing eggs at mobs with 1 health will kill them and drop spawn eggs
+eggSpawnEgg = true
+
+# Custom ore lists (beacon enhanced)
+# Format: block_name:chance
+# Supports vanilla short names (e.g., coal_ore) and modded full IDs (e.g., mekanism:tin_ore)
+# Total probability should not exceed 1.0
+
+# Stone ore list for beacon enhanced generation
+stoneOreCustomList = ["coal_ore:0.15", "iron_ore:0.15", "redstone_ore:0.08", "lapis_ore:0.06", "gold_ore:0.05", "emerald_ore:0.02", "diamond_ore:0.01"]
+
+# Deepslate ore list for beacon enhanced generation
+deepslateOreCustomList = ["deepslate_coal_ore:0.15", "deepslate_iron_ore:0.15", "mekanism:deepslate_tin_ore:0.12", "deepslate_redstone_ore:0.08", "mekanism:deepslate_fluorite_ore:0.07", "deepslate_lapis_ore:0.06", "deepslate_gold_ore:0.05", "mekanism:deepslate_lead_ore:0.04", "mekanism:deepslate_osmium_ore:0.03", "deepslate_emerald_ore:0.02", "deepslate_diamond_ore:0.01", "mekanism:deepslate_uranium_ore:0.01"]
+
+# Nether ore list for beacon enhanced generation
+netherOreCustomList = ["nether_quartz_ore:0.40", "nether_gold_ore:0.25", "ancient_debris:0.005"]
+
+# Custom generation rules
+# Enable custom block generation rules (added via customRules)
+enableCustomGeneration = true
+
+# Custom generation rules list, format: input_block->output_block:adjacent_block1,adjacent_block2
+# Example: obsidian->end_stone:soul_sand
+customRules = []

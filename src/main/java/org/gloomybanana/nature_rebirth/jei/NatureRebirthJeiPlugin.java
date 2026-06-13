@@ -24,13 +24,13 @@ public class NatureRebirthJeiPlugin implements IModPlugin {
     
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        // 方解石获取方式
+        // Calcite obtain method
         if (Config.CALCITE_GENERATION.get()) {
             List<Component> description = new ArrayList<>();
-            description.add(Component.literal("§6获取方式："));
-            description.add(Component.literal("§71. 将岩浆倒在骨块上方"));
-            description.add(Component.literal("§72. 在岩浆周围放置蓝冰"));
-            description.add(Component.literal("§73. 岩浆会转化为方解石"));
+            description.add(Component.translatable("nature_rebirth.jei.obtain"));
+            description.add(Component.translatable("nature_rebirth.jei.calcite.step1"));
+            description.add(Component.translatable("nature_rebirth.jei.calcite.step2"));
+            description.add(Component.translatable("nature_rebirth.jei.calcite.step3"));
             
             registration.addIngredientInfo(
                     new ItemStack(Blocks.CALCITE),
@@ -39,13 +39,13 @@ public class NatureRebirthJeiPlugin implements IModPlugin {
             );
         }
         
-        // 凝灰岩获取方式
+        // Tuff obtain method
         if (Config.TUFF_GENERATION.get()) {
             List<Component> description = new ArrayList<>();
-            description.add(Component.literal("§6获取方式："));
-            description.add(Component.literal("§71. 将岩浆倒在安山岩上方"));
-            description.add(Component.literal("§72. 在岩浆周围放置蓝冰"));
-            description.add(Component.literal("§73. 岩浆会转化为凝灰岩"));
+            description.add(Component.translatable("nature_rebirth.jei.obtain"));
+            description.add(Component.translatable("nature_rebirth.jei.tuff.step1"));
+            description.add(Component.translatable("nature_rebirth.jei.tuff.step2"));
+            description.add(Component.translatable("nature_rebirth.jei.tuff.step3"));
             
             registration.addIngredientInfo(
                     new ItemStack(Blocks.TUFF),
@@ -54,13 +54,13 @@ public class NatureRebirthJeiPlugin implements IModPlugin {
             );
         }
         
-        // 滴水石获取方式
+        // Dripstone obtain method
         if (Config.DRIPSTONE_GENERATION.get()) {
             List<Component> description = new ArrayList<>();
-            description.add(Component.literal("§6获取方式："));
-            description.add(Component.literal("§71. 将岩浆倒在花岗岩上方"));
-            description.add(Component.literal("§72. 在岩浆周围放置蓝冰"));
-            description.add(Component.literal("§73. 岩浆会转化为滴水石"));
+            description.add(Component.translatable("nature_rebirth.jei.obtain"));
+            description.add(Component.translatable("nature_rebirth.jei.dripstone.step1"));
+            description.add(Component.translatable("nature_rebirth.jei.dripstone.step2"));
+            description.add(Component.translatable("nature_rebirth.jei.dripstone.step3"));
             
             registration.addIngredientInfo(
                     new ItemStack(Blocks.DRIPSTONE_BLOCK),
@@ -69,16 +69,16 @@ public class NatureRebirthJeiPlugin implements IModPlugin {
             );
         }
         
-        // 下界岩获取方式
+        // Netherrack obtain method
         if (Config.NETHERRACK_GENERATION.get()) {
             List<Component> description = new ArrayList<>();
-            description.add(Component.literal("§6获取方式："));
-            description.add(Component.literal("§71. 让岩浆流动"));
-            description.add(Component.literal("§72. 在岩浆周围同时放置蓝冰和岩浆块"));
-            description.add(Component.literal("§73. 岩浆会转化为下界岩"));
-            description.add(Component.literal("§e信标增强："));
-            description.add(Component.literal("§7在生成位置下方放置信标，"));
-            description.add(Component.literal("§7有概率生成下界矿石（石英、金、远古残骸）"));
+            description.add(Component.translatable("nature_rebirth.jei.obtain"));
+            description.add(Component.translatable("nature_rebirth.jei.netherrack.step1"));
+            description.add(Component.translatable("nature_rebirth.jei.netherrack.step2"));
+            description.add(Component.translatable("nature_rebirth.jei.netherrack.step3"));
+            description.add(Component.translatable("nature_rebirth.jei.beacon.enhanced"));
+            description.add(Component.translatable("nature_rebirth.jei.beacon.enhanced.desc"));
+            description.add(Component.translatable("nature_rebirth.jei.nether.ore.desc"));
             
             registration.addIngredientInfo(
                     new ItemStack(Blocks.NETHERRACK),
@@ -87,14 +87,14 @@ public class NatureRebirthJeiPlugin implements IModPlugin {
             );
         }
         
-        // 深板岩圆石获取方式
+        // Cobbled Deepslate obtain method
         List<Component> deepslateDesc = new ArrayList<>();
-        deepslateDesc.add(Component.literal("§6获取方式："));
-        deepslateDesc.add(Component.literal("§71. 在Y=" + Config.DEEPSLATE_Y_THRESHOLD.get() + "以下让岩浆与水相遇"));
-        deepslateDesc.add(Component.literal("§72. 会生成深板岩圆石而非普通圆石"));
-        deepslateDesc.add(Component.literal("§e信标增强："));
-        deepslateDesc.add(Component.literal("§7在生成位置下方放置信标，"));
-        deepslateDesc.add(Component.literal("§7有概率生成深板岩矿石"));
+        deepslateDesc.add(Component.translatable("nature_rebirth.jei.obtain"));
+        deepslateDesc.add(Component.translatable("nature_rebirth.jei.deepslate.cobblestone.step1", Config.DEEPSLATE_Y_THRESHOLD.get()));
+        deepslateDesc.add(Component.translatable("nature_rebirth.jei.deepslate.cobblestone.step2"));
+        deepslateDesc.add(Component.translatable("nature_rebirth.jei.beacon.enhanced"));
+        deepslateDesc.add(Component.translatable("nature_rebirth.jei.beacon.enhanced.desc"));
+        deepslateDesc.add(Component.translatable("nature_rebirth.jei.deepslate.ore.desc"));
         
         registration.addIngredientInfo(
                 new ItemStack(Blocks.COBBLED_DEEPSLATE),
@@ -102,14 +102,14 @@ public class NatureRebirthJeiPlugin implements IModPlugin {
                 deepslateDesc.toArray(new Component[0])
         );
         
-        // 深板岩获取方式
+        // Deepslate obtain method
         List<Component> deepslateStoneDesc = new ArrayList<>();
-        deepslateStoneDesc.add(Component.literal("§6获取方式："));
-        deepslateStoneDesc.add(Component.literal("§71. 在Y=" + Config.DEEPSLATE_Y_THRESHOLD.get() + "以下让岩浆源与水相遇"));
-        deepslateStoneDesc.add(Component.literal("§72. 会生成深板岩而非普通石头"));
-        deepslateStoneDesc.add(Component.literal("§e信标增强："));
-        deepslateStoneDesc.add(Component.literal("§7在生成位置下方放置信标，"));
-        deepslateStoneDesc.add(Component.literal("§7有概率生成深板岩矿石"));
+        deepslateStoneDesc.add(Component.translatable("nature_rebirth.jei.obtain"));
+        deepslateStoneDesc.add(Component.translatable("nature_rebirth.jei.deepslate.stone.step1", Config.DEEPSLATE_Y_THRESHOLD.get()));
+        deepslateStoneDesc.add(Component.translatable("nature_rebirth.jei.deepslate.stone.step2"));
+        deepslateStoneDesc.add(Component.translatable("nature_rebirth.jei.beacon.enhanced"));
+        deepslateStoneDesc.add(Component.translatable("nature_rebirth.jei.beacon.enhanced.desc"));
+        deepslateStoneDesc.add(Component.translatable("nature_rebirth.jei.deepslate.ore.desc"));
         
         registration.addIngredientInfo(
                 new ItemStack(Blocks.DEEPSLATE),
@@ -117,68 +117,46 @@ public class NatureRebirthJeiPlugin implements IModPlugin {
                 deepslateStoneDesc.toArray(new Component[0])
         );
         
-        // 矿石获取方式（信标增强）
-        addOreInfo(registration, Blocks.COAL_ORE, "煤矿石", "石制");
-        addOreInfo(registration, Blocks.IRON_ORE, "铁矿石", "石制");
-        addOreInfo(registration, Blocks.REDSTONE_ORE, "红石矿石", "石制");
-        addOreInfo(registration, Blocks.LAPIS_ORE, "青金石矿石", "石制");
-        addOreInfo(registration, Blocks.GOLD_ORE, "金矿石", "石制");
-        addOreInfo(registration, Blocks.EMERALD_ORE, "绿宝石矿石", "石制");
-        addOreInfo(registration, Blocks.DIAMOND_ORE, "钻石矿石", "石制");
+        // Stone ore obtain methods (beacon enhanced)
+        addOreInfo(registration, Blocks.COAL_ORE, "nature_rebirth.jei.ore.coal", "stone");
+        addOreInfo(registration, Blocks.IRON_ORE, "nature_rebirth.jei.ore.iron", "stone");
+        addOreInfo(registration, Blocks.REDSTONE_ORE, "nature_rebirth.jei.ore.redstone", "stone");
+        addOreInfo(registration, Blocks.LAPIS_ORE, "nature_rebirth.jei.ore.lapis", "stone");
+        addOreInfo(registration, Blocks.GOLD_ORE, "nature_rebirth.jei.ore.gold", "stone");
+        addOreInfo(registration, Blocks.EMERALD_ORE, "nature_rebirth.jei.ore.emerald", "stone");
+        addOreInfo(registration, Blocks.DIAMOND_ORE, "nature_rebirth.jei.ore.diamond", "stone");
         
-        addOreInfo(registration, Blocks.DEEPSLATE_COAL_ORE, "深板岩煤矿石", "深板岩");
-        addOreInfo(registration, Blocks.DEEPSLATE_IRON_ORE, "深板岩铁矿石", "深板岩");
-        addOreInfo(registration, Blocks.DEEPSLATE_REDSTONE_ORE, "深板岩红石矿石", "深板岩");
-        addOreInfo(registration, Blocks.DEEPSLATE_LAPIS_ORE, "深板岩青金石矿石", "深板岩");
-        addOreInfo(registration, Blocks.DEEPSLATE_GOLD_ORE, "深板岩金矿石", "深板岩");
-        addOreInfo(registration, Blocks.DEEPSLATE_EMERALD_ORE, "深板岩绿宝石矿石", "深板岩");
-        addOreInfo(registration, Blocks.DEEPSLATE_DIAMOND_ORE, "深板岩钻石矿石", "深板岩");
+        // Deepslate ore obtain methods (beacon enhanced)
+        addOreInfo(registration, Blocks.DEEPSLATE_COAL_ORE, "nature_rebirth.jei.ore.deepslate_coal", "deepslate");
+        addOreInfo(registration, Blocks.DEEPSLATE_IRON_ORE, "nature_rebirth.jei.ore.deepslate_iron", "deepslate");
+        addOreInfo(registration, Blocks.DEEPSLATE_REDSTONE_ORE, "nature_rebirth.jei.ore.deepslate_redstone", "deepslate");
+        addOreInfo(registration, Blocks.DEEPSLATE_LAPIS_ORE, "nature_rebirth.jei.ore.deepslate_lapis", "deepslate");
+        addOreInfo(registration, Blocks.DEEPSLATE_GOLD_ORE, "nature_rebirth.jei.ore.deepslate_gold", "deepslate");
+        addOreInfo(registration, Blocks.DEEPSLATE_EMERALD_ORE, "nature_rebirth.jei.ore.deepslate_emerald", "deepslate");
+        addOreInfo(registration, Blocks.DEEPSLATE_DIAMOND_ORE, "nature_rebirth.jei.ore.deepslate_diamond", "deepslate");
         
-        addOreInfo(registration, Blocks.NETHER_QUARTZ_ORE, "下界石英矿石", "下界");
-        addOreInfo(registration, Blocks.NETHER_GOLD_ORE, "下界金矿石", "下界");
-        addOreInfo(registration, Blocks.ANCIENT_DEBRIS, "远古残骸", "下界");
-        
-        // 龙息获取方式
-        List<Component> dragonBreathDesc = new ArrayList<>();
-        dragonBreathDesc.add(Component.literal("§6合成获取："));
-        dragonBreathDesc.add(Component.literal("§7将龙首和玻璃瓶放入合成台"));
-        dragonBreathDesc.add(Component.literal("§7龙首不消耗，每个玻璃瓶产出1瓶龙息"));
-        
-        registration.addIngredientInfo(
-                new ItemStack(net.minecraft.world.item.Items.DRAGON_BREATH),
-                VanillaTypes.ITEM_STACK,
-                dragonBreathDesc.toArray(new Component[0])
-        );
-        
-        // 龙首信息
-        List<Component> dragonHeadDesc = new ArrayList<>();
-        dragonHeadDesc.add(Component.literal("§6可用于合成龙息："));
-        dragonHeadDesc.add(Component.literal("§7与玻璃瓶在合成台中合成"));
-        dragonHeadDesc.add(Component.literal("§7龙首不消耗"));
-        
-        registration.addIngredientInfo(
-                new ItemStack(net.minecraft.world.item.Items.DRAGON_HEAD),
-                VanillaTypes.ITEM_STACK,
-                dragonHeadDesc.toArray(new Component[0])
-        );
+        // Nether ore obtain methods (beacon enhanced)
+        addOreInfo(registration, Blocks.NETHER_QUARTZ_ORE, "nature_rebirth.jei.ore.nether_quartz", "nether");
+        addOreInfo(registration, Blocks.NETHER_GOLD_ORE, "nature_rebirth.jei.ore.nether_gold", "nether");
+        addOreInfo(registration, Blocks.ANCIENT_DEBRIS, "nature_rebirth.jei.ore.ancient_debris", "nether");
     }
     
-    private void addOreInfo(IRecipeRegistration registration, Block ore, String name, String type) {
+    private void addOreInfo(IRecipeRegistration registration, Block ore, String oreNameKey, String type) {
         List<Component> description = new ArrayList<>();
-        description.add(Component.literal("§6信标增强获取："));
+        description.add(Component.translatable("nature_rebirth.jei.beacon.obtain"));
         
-        if (type.equals("石制")) {
-            description.add(Component.literal("§71. 在Y≥" + Config.DEEPSLATE_Y_THRESHOLD.get() + "让岩浆源与水相遇"));
-            description.add(Component.literal("§72. 在生成位置下方放置信标"));
-            description.add(Component.literal("§73. 有概率生成" + name));
-        } else if (type.equals("深板岩")) {
-            description.add(Component.literal("§71. 在Y<" + Config.DEEPSLATE_Y_THRESHOLD.get() + "让岩浆与水相遇"));
-            description.add(Component.literal("§72. 在生成位置下方放置信标"));
-            description.add(Component.literal("§73. 有概率生成" + name));
-        } else if (type.equals("下界")) {
-            description.add(Component.literal("§71. 让岩浆周围同时存在蓝冰和岩浆块"));
-            description.add(Component.literal("§72. 在生成位置下方放置信标"));
-            description.add(Component.literal("§73. 有概率生成" + name));
+        if (type.equals("stone")) {
+            description.add(Component.translatable("nature_rebirth.jei.stone.ore.step1", Config.DEEPSLATE_Y_THRESHOLD.get()));
+            description.add(Component.translatable("nature_rebirth.jei.stone.ore.step2"));
+            description.add(Component.translatable("nature_rebirth.jei.stone.ore.desc", Component.translatable(oreNameKey)));
+        } else if (type.equals("deepslate")) {
+            description.add(Component.translatable("nature_rebirth.jei.deepslate.ore.step1", Config.DEEPSLATE_Y_THRESHOLD.get()));
+            description.add(Component.translatable("nature_rebirth.jei.deepslate.ore.step2"));
+            description.add(Component.translatable("nature_rebirth.jei.stone.ore.desc", Component.translatable(oreNameKey)));
+        } else if (type.equals("nether")) {
+            description.add(Component.translatable("nature_rebirth.jei.nether.ore.step1"));
+            description.add(Component.translatable("nature_rebirth.jei.nether.ore.step2"));
+            description.add(Component.translatable("nature_rebirth.jei.stone.ore.desc", Component.translatable(oreNameKey)));
         }
         
         registration.addIngredientInfo(

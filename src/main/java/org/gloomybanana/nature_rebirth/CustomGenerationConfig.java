@@ -1,5 +1,7 @@
 package org.gloomybanana.nature_rebirth;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -398,6 +400,33 @@ public class CustomGenerationConfig {
         return rules;
     }
     
+    // 解析方块名称（支持短名称和完整ID）
+    private static Block parseBlock(String name) {
+        name = name.trim().toLowerCase();
+        
+        // 先尝试在预定义映射中查找（短名称）
+        Block block = BLOCK_MAP.get(name);
+        if (block != null) {
+            return block;
+        }
+        
+        // 尝试解析完整方块ID格式（modid:block_name）
+        if (name.contains(":")) {
+            String[] parts = name.split(":");
+            if (parts.length == 2) {
+                String modId = parts[0].trim();
+                String blockName = parts[1].trim();
+                
+                // 通过注册表动态查找
+                return BuiltInRegistries.BLOCK.getOptional(
+                    Identifier.parse(modId + ":" + blockName)
+                ).orElse(null);
+            }
+        }
+        
+        return null;
+    }
+    
     // 解析单条自定义规则
     private static GenerationRule parseSingleRule(String ruleStr) {
         try {
@@ -417,8 +446,9 @@ public class CustomGenerationConfig {
             String outputName = outputAndAdjacent[0].trim().toLowerCase();
             String[] adjacentNames = outputAndAdjacent[1].split(",");
             
-            Block inputBlock = BLOCK_MAP.get(inputName);
-            Block outputBlock = BLOCK_MAP.get(outputName);
+            // 使用新的解析方法，支持模组方块
+            Block inputBlock = parseBlock(inputName);
+            Block outputBlock = parseBlock(outputName);
             Set<Block> adjacentBlocks = new HashSet<>();
             
             if (inputBlock == null || outputBlock == null) {
@@ -426,7 +456,7 @@ public class CustomGenerationConfig {
             }
             
             for (String adj : adjacentNames) {
-                Block block = BLOCK_MAP.get(adj.trim().toLowerCase());
+                Block block = parseBlock(adj.trim().toLowerCase());
                 if (block != null) {
                     adjacentBlocks.add(block);
                 }

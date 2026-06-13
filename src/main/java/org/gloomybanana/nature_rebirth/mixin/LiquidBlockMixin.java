@@ -3,9 +3,12 @@ package org.gloomybanana.nature_rebirth.mixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,8 +19,41 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 @Mixin(LiquidBlock.class)
 public abstract class LiquidBlockMixin {
+
+    private static boolean cacheInitialized = false;
+    private static Map<String, Double> stoneOreCache = null;
+    private static Map<String, Double> deepslateOreCache = null;
+
+    // 方块名称映射（短名称到方块对象）
+    private static final Map<String, Block> ORE_BLOCK_MAP = new LinkedHashMap<>();
+
+    static {
+        // 石头矿石
+        ORE_BLOCK_MAP.put("coal_ore", Blocks.COAL_ORE);
+        ORE_BLOCK_MAP.put("iron_ore", Blocks.IRON_ORE);
+        ORE_BLOCK_MAP.put("copper_ore", Blocks.COPPER_ORE);
+        ORE_BLOCK_MAP.put("gold_ore", Blocks.GOLD_ORE);
+        ORE_BLOCK_MAP.put("redstone_ore", Blocks.REDSTONE_ORE);
+        ORE_BLOCK_MAP.put("lapis_ore", Blocks.LAPIS_ORE);
+        ORE_BLOCK_MAP.put("emerald_ore", Blocks.EMERALD_ORE);
+        ORE_BLOCK_MAP.put("diamond_ore", Blocks.DIAMOND_ORE);
+        
+        // 深板岩矿石
+        ORE_BLOCK_MAP.put("deepslate_coal_ore", Blocks.DEEPSLATE_COAL_ORE);
+        ORE_BLOCK_MAP.put("deepslate_iron_ore", Blocks.DEEPSLATE_IRON_ORE);
+        ORE_BLOCK_MAP.put("deepslate_copper_ore", Blocks.DEEPSLATE_COPPER_ORE);
+        ORE_BLOCK_MAP.put("deepslate_gold_ore", Blocks.DEEPSLATE_GOLD_ORE);
+        ORE_BLOCK_MAP.put("deepslate_redstone_ore", Blocks.DEEPSLATE_REDSTONE_ORE);
+        ORE_BLOCK_MAP.put("deepslate_lapis_ore", Blocks.DEEPSLATE_LAPIS_ORE);
+        ORE_BLOCK_MAP.put("deepslate_emerald_ore", Blocks.DEEPSLATE_EMERALD_ORE);
+        ORE_BLOCK_MAP.put("deepslate_diamond_ore", Blocks.DEEPSLATE_DIAMOND_ORE);
+    }
 
     // 辅助方法：检查下方是否有信标
     private boolean hasBeaconBelow(Level level, BlockPos pos) {
@@ -31,60 +67,109 @@ public abstract class LiquidBlockMixin {
         return false;
     }
 
-    // 辅助方法：根据概率选择石制矿石（基于配置文件）
-    private BlockState getStoneOre(Level level) {
+    // 初始化自定义矿石配置缓存
+    private static void initializeCustomOreCache() {
+        if (cacheInitialized) {
+            return;
+        }
+        cacheInitialized = true;
+        
+        // 解析石头矿石自定义配置
+        var stoneConfig = org.gloomybanana.nature_rebirth.Config.STONE_ORE_CUSTOM_LIST.get();
+        if (!stoneConfig.isEmpty()) {
+            stoneOreCache = parseCustomOreList(stoneConfig);
+        }
+        
+        // 解析深板岩矿石自定义配置
+        var deepslateConfig = org.gloomybanana.nature_rebirth.Config.DEEPSLATE_ORE_CUSTOM_LIST.get();
+        if (!deepslateConfig.isEmpty()) {
+            deepslateOreCache = parseCustomOreList(deepslateConfig);
+        }
+    }
+
+    // 解析自定义矿石列表
+    private static Map<String, Double> parseCustomOreList(List<? extends String> configList) {
+        Map<String, Double> result = new LinkedHashMap<>();
+        for (String entry : configList) {
+            String[] parts = entry.split(":");
+            if (parts.length == 2) {
+                String oreName = parts[0].trim().toLowerCase();
+                try {
+                    double chance = Double.parseDouble(parts[1].trim());
+                    result.put(oreName, chance);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        return result;
+    }
+
+    // 辅助方法：根据概率选择矿石（基于自定义配置列表）
+    private BlockState getOreFromCustomList(Level level, Map<String, Double> oreMap) {
+        if (oreMap == null || oreMap.isEmpty()) {
+            return null;
+        }
+        
         double rand = level.getRandom().nextDouble();
         double cumulative = 0.0;
         
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_COAL_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.COAL_ORE.defaultBlockState();
+        for (Map.Entry<String, Double> entry : oreMap.entrySet()) {
+            cumulative += entry.getValue();
+            if (rand < cumulative) {
+                Block block = parseBlock(entry.getKey());
+                if (block != null) {
+                    return block.defaultBlockState();
+                }
+            }
+        }
         
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_IRON_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.IRON_ORE.defaultBlockState();
+        return null;
+    }
+
+    // 辅助方法：解析方块名称（支持短名称和完整ID）
+    private Block parseBlock(String name) {
+        name = name.trim().toLowerCase();
         
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_REDSTONE_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.REDSTONE_ORE.defaultBlockState();
+        // 先尝试在预定义映射中查找（短名称）
+        Block block = ORE_BLOCK_MAP.get(name);
+        if (block != null) {
+            return block;
+        }
         
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_LAPIS_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.LAPIS_ORE.defaultBlockState();
+        // 尝试解析完整方块ID格式（modid:block_name）
+        if (name.contains(":")) {
+            try {
+                // 通过注册表动态查找
+                Identifier blockId = Identifier.parse(name);
+                return BuiltInRegistries.BLOCK.getOptional(blockId).orElse(null);
+            } catch (Exception ignored) {
+                return null;
+            }
+        }
         
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_GOLD_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.GOLD_ORE.defaultBlockState();
+        return null;
+    }
+
+    // 辅助方法：根据概率选择石制矿石（基于配置文件）
+    private BlockState getStoneOre(Level level) {
+        initializeCustomOreCache();
         
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_EMERALD_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.EMERALD_ORE.defaultBlockState();
-        
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_DIAMOND_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DIAMOND_ORE.defaultBlockState();
+        // 使用自定义配置列表
+        if (stoneOreCache != null && !stoneOreCache.isEmpty()) {
+            return getOreFromCustomList(level, stoneOreCache);
+        }
         
         return null;
     }
 
     // 辅助方法：根据概率选择深板岩矿石（基于配置文件）
     private BlockState getDeepslateOre(Level level) {
-        double rand = level.getRandom().nextDouble();
-        double cumulative = 0.0;
+        initializeCustomOreCache();
         
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_COAL_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_COAL_ORE.defaultBlockState();
-        
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_IRON_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_IRON_ORE.defaultBlockState();
-        
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_REDSTONE_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_REDSTONE_ORE.defaultBlockState();
-        
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_LAPIS_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_LAPIS_ORE.defaultBlockState();
-        
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_GOLD_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_GOLD_ORE.defaultBlockState();
-        
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_EMERALD_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_EMERALD_ORE.defaultBlockState();
-        
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_DIAMOND_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_DIAMOND_ORE.defaultBlockState();
+        // 使用自定义配置列表
+        if (deepslateOreCache != null && !deepslateOreCache.isEmpty()) {
+            return getOreFromCustomList(level, deepslateOreCache);
+        }
         
         return null;
     }

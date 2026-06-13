@@ -23,5 +23,15 @@ public class NatureRebirth {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         LOGGER.info("Nature Rebirth loaded!");
+        
+        // 打印配置值以调试
+        var stoneOreList = Config.STONE_ORE_CUSTOM_LIST.get();
+        LOGGER.info("Stone ore config: " + stoneOreList);
+        
+        var deepslateOreList = Config.DEEPSLATE_ORE_CUSTOM_LIST.get();
+        LOGGER.info("Deepslate ore config: " + deepslateOreList);
+        
+        var netherOreList = Config.NETHER_ORE_CUSTOM_LIST.get();
+        LOGGER.info("Nether ore config: " + netherOreList);
     }
 }

@@ -3,9 +3,10 @@ package org.gloomybanana.nature_rebirth.mixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -17,8 +18,100 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Mixin(LavaFluid.class)
 public abstract class LavaFluidMixin {
+
+    // 自定义矿石配置（直接存储方块对象）
+    private static List<ConfiguredOre> stoneOreList = null;
+    private static List<ConfiguredOre> deepslateOreList = null;
+    private static List<ConfiguredOre> netherOreList = null;
+    private static boolean cacheInitialized = false;
+
+    // 矿石配置类
+    private static class ConfiguredOre {
+        final Block block;
+        final double cumulativeChance;
+        
+        ConfiguredOre(Block block, double cumulativeChance) {
+            this.block = block;
+            this.cumulativeChance = cumulativeChance;
+        }
+    }
+
+    // 辅助方法：解析方块名称（支持短名称和完整ID）
+    private static Block parseBlock(String name) {
+        name = name.trim().toLowerCase();
+        
+        // 尝试解析完整方块ID格式（modid:block_name）
+        try {
+            Identifier blockId = Identifier.parse(name);
+            return BuiltInRegistries.BLOCK.getOptional(blockId).orElse(null);
+        } catch (Exception e) {
+            // 如果解析失败，尝试作为 Minecraft 方块解析
+            try {
+                Identifier blockId = Identifier.parse("minecraft:" + name);
+                return BuiltInRegistries.BLOCK.getOptional(blockId).orElse(null);
+            } catch (Exception e2) {
+                return null;
+            }
+        }
+    }
+
+    // 初始化自定义矿石配置
+    private static void initializeCustomOreCache() {
+        if (cacheInitialized) {
+            return;
+        }
+        cacheInitialized = true;
+        
+        // 解析石头矿石配置
+        var stoneConfig = org.gloomybanana.nature_rebirth.Config.STONE_ORE_CUSTOM_LIST.get();
+        if (!stoneConfig.isEmpty()) {
+            stoneOreList = parseOreConfig(stoneConfig);
+        }
+        
+        // 解析深板岩矿石配置
+        var deepslateConfig = org.gloomybanana.nature_rebirth.Config.DEEPSLATE_ORE_CUSTOM_LIST.get();
+        if (!deepslateConfig.isEmpty()) {
+            deepslateOreList = parseOreConfig(deepslateConfig);
+        }
+        
+        // 解析下界矿石配置
+        var netherConfig = org.gloomybanana.nature_rebirth.Config.NETHER_ORE_CUSTOM_LIST.get();
+        if (!netherConfig.isEmpty()) {
+            netherOreList = parseOreConfig(netherConfig);
+        }
+    }
+
+    // 解析矿石配置列表
+    private static List<ConfiguredOre> parseOreConfig(List<? extends String> configList) {
+        List<ConfiguredOre> result = new ArrayList<>();
+        double cumulative = 0.0;
+        
+        for (String entry : configList) {
+            // 找到最后一个冒号，前面的部分是方块ID，后面的部分是概率
+            int lastColonIndex = entry.lastIndexOf(":");
+            if (lastColonIndex > 0) {
+                String oreName = entry.substring(0, lastColonIndex).trim().toLowerCase();
+                String chanceStr = entry.substring(lastColonIndex + 1).trim();
+                try {
+                    double chance = Double.parseDouble(chanceStr);
+                    cumulative += chance;
+                    
+                    Block block = parseBlock(oreName);
+                    if (block != null) {
+                        result.add(new ConfiguredOre(block, cumulative));
+                    }
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        
+        return result;
+    }
 
     // 辅助方法：检查岩浆周围（包括顶部）是否有蓝冰
     private boolean hasAdjacentBlueIce(LevelAccessor level, BlockPos pos) {
@@ -26,7 +119,7 @@ public abstract class LavaFluidMixin {
     }
     
     // 辅助方法：检查岩浆周围（包括顶部）是否有指定方块
-    private boolean hasAdjacentBlock(LevelAccessor level, BlockPos pos, net.minecraft.world.level.block.Block targetBlock) {
+    private boolean hasAdjacentBlock(LevelAccessor level, BlockPos pos, Block targetBlock) {
         // 检查水平方向
         for (Direction dir : Direction.Plane.HORIZONTAL) {
             BlockPos adjacentPos = pos.relative(dir);
@@ -45,7 +138,7 @@ public abstract class LavaFluidMixin {
     }
     
     // 辅助方法：检查自定义生成规则
-    private boolean checkCustomGeneration(LevelAccessor level, BlockPos pos, Block inputBlock, BlockState resultBlock, CallbackInfo ci) {
+    private boolean checkCustomGeneration(LevelAccessor level, BlockPos pos, Block inputBlock, CallbackInfo ci) {
         var rules = org.gloomybanana.nature_rebirth.CustomGenerationConfig.getRules();
         
         for (var rule : rules) {
@@ -62,14 +155,6 @@ public abstract class LavaFluidMixin {
                 if (allAdjacentPresent) {
                     BlockState finalBlock = rule.outputBlock.defaultBlockState();
                     
-                    // 信标增强
-                    if (hasBeaconBelow(level, pos)) {
-                        BlockState oreBlock = getStoneOre(level);
-                        if (oreBlock != null) {
-                            finalBlock = oreBlock;
-                        }
-                    }
-                    
                     level.setBlock(pos, finalBlock, 3);
                     playEffect(level, pos);
                     ci.cancel();
@@ -78,146 +163,6 @@ public abstract class LavaFluidMixin {
             }
         }
         return false;
-    }
-
-    // 辅助方法：检查下方是否有信标（检查多个方块距离）
-    private boolean hasBeaconBelow(LevelAccessor level, BlockPos pos) {
-        // 检查下方1-5格是否有信标
-        for (int i = 1; i <= 5; i++) {
-            BlockPos belowPos = pos.below(i);
-            BlockState belowState = level.getBlockState(belowPos);
-            if (belowState.is(Blocks.BEACON)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // 辅助方法：根据概率选择石制矿石（基于配置文件）
-    private BlockState getStoneOre(LevelAccessor level) {
-        double rand = level.getRandom().nextDouble();
-        double cumulative = 0.0;
-        
-        // 煤矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_COAL_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.COAL_ORE.defaultBlockState();
-        
-        // 铁矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_IRON_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.IRON_ORE.defaultBlockState();
-        
-        // 红石矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_REDSTONE_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.REDSTONE_ORE.defaultBlockState();
-        
-        // 青金石矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_LAPIS_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.LAPIS_ORE.defaultBlockState();
-        
-        // 金矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_GOLD_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.GOLD_ORE.defaultBlockState();
-        
-        // 绿宝石矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_EMERALD_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.EMERALD_ORE.defaultBlockState();
-        
-        // 钻石矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_DIAMOND_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DIAMOND_ORE.defaultBlockState();
-        
-        return null; // 不生成矿石
-    }
-
-    // 辅助方法：根据概率选择深板岩矿石（基于配置文件）
-    private BlockState getDeepslateOre(LevelAccessor level) {
-        double rand = level.getRandom().nextDouble();
-        double cumulative = 0.0;
-        
-        // 深板岩煤矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_COAL_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_COAL_ORE.defaultBlockState();
-        
-        // 深板岩铁矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_IRON_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_IRON_ORE.defaultBlockState();
-        
-        // 深板岩红石矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_REDSTONE_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_REDSTONE_ORE.defaultBlockState();
-        
-        // 深板岩青金石矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_LAPIS_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_LAPIS_ORE.defaultBlockState();
-        
-        // 深板岩金矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_GOLD_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_GOLD_ORE.defaultBlockState();
-        
-        // 深板岩绿宝石矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_EMERALD_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_EMERALD_ORE.defaultBlockState();
-        
-        // 深板岩钻石矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.STONE_DIAMOND_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.DEEPSLATE_DIAMOND_ORE.defaultBlockState();
-        
-        return null; // 不生成矿石
-    }
-
-    // 辅助方法：根据概率选择下界矿石（基于配置文件）
-    private BlockState getNetherOre(LevelAccessor level) {
-        double rand = level.getRandom().nextDouble();
-        double cumulative = 0.0;
-        
-        // 下界石英矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.NETHER_QUARTZ_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.NETHER_QUARTZ_ORE.defaultBlockState();
-        
-        // 下界金矿石
-        cumulative += org.gloomybanana.nature_rebirth.Config.NETHER_GOLD_ORE_CHANCE.get();
-        if (rand < cumulative) return Blocks.NETHER_GOLD_ORE.defaultBlockState();
-        
-        // 远古残骸
-        cumulative += org.gloomybanana.nature_rebirth.Config.ANCIENT_DEBRIS_CHANCE.get();
-        if (rand < cumulative) return Blocks.ANCIENT_DEBRIS.defaultBlockState();
-        
-        return null; // 不生成矿石
-    }
-
-    // 注入到 spreadTo 方法开始处，在岩浆放置前检查条件
-    @Inject(method = "spreadTo",
-            at = @At("HEAD"),
-            cancellable = true)
-    private void onSpreadTo(LevelAccessor level, BlockPos pos, BlockState state,
-                           Direction direction, FluidState fluidState, CallbackInfo ci) {
-        BlockPos belowPos = pos.below();
-        BlockState belowState = level.getBlockState(belowPos);
-        
-        // 先检查自定义生成规则
-        if (checkCustomGeneration(level, pos, belowState.getBlock(), null, ci)) {
-            return;
-        }
-        
-        // 下界岩生成：流动的岩浆周围6个面同时存在蓝冰和岩浆块
-        if (org.gloomybanana.nature_rebirth.Config.NETHERRACK_GENERATION.get()) {
-            if (hasAdjacentBlueIceAndMagmaBlock(level, pos)) {
-                BlockState resultBlock = Blocks.NETHERRACK.defaultBlockState();
-
-                // 信标增强：有概率生成下界矿石
-                if (hasBeaconBelow(level, pos)) {
-                    BlockState oreBlock = getNetherOre(level);
-                    if (oreBlock != null) {
-                        resultBlock = oreBlock;
-                    }
-                }
-
-                level.setBlock(pos, resultBlock, 3);
-                playEffect(level, pos);
-                ci.cancel();
-                return;
-            }
-        }
     }
 
     // 辅助方法：检查岩浆周围6个面是否同时存在蓝冰和岩浆块
@@ -243,6 +188,101 @@ public abstract class LavaFluidMixin {
         }
         
         return hasBlueIce && hasMagmaBlock;
+    }
+
+    // 辅助方法：检查下方是否有信标（检查多个方块距离）
+    private boolean hasBeaconBelow(LevelAccessor level, BlockPos pos) {
+        // 检查下方1-5格是否有信标
+        for (int i = 1; i <= 5; i++) {
+            BlockPos belowPos = pos.below(i);
+            BlockState belowState = level.getBlockState(belowPos);
+            if (belowState.is(Blocks.BEACON)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 辅助方法：根据概率选择石制矿石（基于配置文件）
+    private BlockState getStoneOre(LevelAccessor level) {
+        initializeCustomOreCache();
+        
+        if (stoneOreList != null && !stoneOreList.isEmpty()) {
+            return selectOreFromList(level, stoneOreList);
+        }
+        
+        return null;
+    }
+
+    // 辅助方法：根据概率选择深板岩矿石（基于配置文件）
+    private BlockState getDeepslateOre(LevelAccessor level) {
+        initializeCustomOreCache();
+        
+        if (deepslateOreList != null && !deepslateOreList.isEmpty()) {
+            return selectOreFromList(level, deepslateOreList);
+        }
+        
+        return null;
+    }
+
+    // 辅助方法：根据概率选择下界矿石（基于配置文件）
+    private BlockState getNetherOre(LevelAccessor level) {
+        initializeCustomOreCache();
+        
+        if (netherOreList != null && !netherOreList.isEmpty()) {
+            return selectOreFromList(level, netherOreList);
+        }
+        
+        return null;
+    }
+
+    // 从矿石列表中根据概率选择矿石
+    private BlockState selectOreFromList(LevelAccessor level, List<ConfiguredOre> oreList) {
+        double rand = level.getRandom().nextDouble();
+        
+        for (ConfiguredOre ore : oreList) {
+            if (rand < ore.cumulativeChance) {
+                return ore.block.defaultBlockState();
+            }
+        }
+        
+        // 如果没有选中任何矿石（概率总和不足1.0），返回null表示生成普通方块
+        return null;
+    }
+
+    // 注入到 spreadTo 方法开始处，在岩浆放置前检查条件
+    @Inject(method = "spreadTo",
+            at = @At("HEAD"),
+            cancellable = true)
+    private void onSpreadTo(LevelAccessor level, BlockPos pos, BlockState state,
+                           Direction direction, FluidState fluidState, CallbackInfo ci) {
+        BlockPos belowPos = pos.below();
+        BlockState belowState = level.getBlockState(belowPos);
+        
+        // 先检查自定义生成规则
+        if (checkCustomGeneration(level, pos, belowState.getBlock(), ci)) {
+            return;
+        }
+        
+        // 下界岩生成：流动的岩浆周围6个面同时存在蓝冰和岩浆块
+        if (org.gloomybanana.nature_rebirth.Config.NETHERRACK_GENERATION.get()) {
+            if (hasAdjacentBlueIceAndMagmaBlock(level, pos)) {
+                BlockState resultBlock = Blocks.NETHERRACK.defaultBlockState();
+
+                // 信标增强：有概率生成下界矿石
+                if (hasBeaconBelow(level, pos)) {
+                    BlockState oreBlock = getNetherOre(level);
+                    if (oreBlock != null) {
+                        resultBlock = oreBlock;
+                    }
+                }
+
+                level.setBlock(pos, resultBlock, 3);
+                playEffect(level, pos);
+                ci.cancel();
+                return;
+            }
+        }
     }
 
     // 注入到 spreadTo 方法中，在放置石头前检查深板岩条件

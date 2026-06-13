@@ -8,108 +8,104 @@ import java.util.List;
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    // 深板岩生成设置
+    // Deepslate generation settings
     public static final ModConfigSpec.IntValue DEEPSLATE_Y_THRESHOLD = BUILDER
-            .comment("生成深板岩变种而非圆石/石头时，岩浆遇水的Y坐标阈值",
-                    "当岩浆在低于此Y等级与水相遇时，将生成深板岩变种",
-                    "默认值为0（Y=0以下生成深板岩）")
+            .comment("Y coordinate threshold for generating deepslate variants instead of cobblestone/stone",
+                    "When lava meets water below this Y level, it will generate deepslate variants",
+                    "Default: 0 (generate deepslate below Y=0)")
             .defineInRange("deepslateYThreshold", 0, -64, 319);
 
-    // 方解石生成设置
+    // Calcite generation setting
     public static final ModConfigSpec.BooleanValue CALCITE_GENERATION = BUILDER
-            .comment("当岩浆在骨块上方流动且相邻蓝冰时，启用方解石生成",
-                    "默认：true（启用）")
+            .comment("Enable calcite generation when lava flows above bone block and adjacent to blue ice",
+                    "Default: true (enabled)")
             .define("calciteGeneration", true);
 
-    // 凝灰岩生成设置
+    // Tuff generation setting
     public static final ModConfigSpec.BooleanValue TUFF_GENERATION = BUILDER
-            .comment("当岩浆在安山岩上方流动且相邻蓝冰时，启用凝灰岩生成",
-                    "默认：true（启用）")
+            .comment("Enable tuff generation when lava flows above andesite and adjacent to blue ice",
+                    "Default: true (enabled)")
             .define("tuffGeneration", true);
 
-    // 下界岩生成设置
+    // Netherrack generation setting
     public static final ModConfigSpec.BooleanValue NETHERRACK_GENERATION = BUILDER
-            .comment("当岩浆周围同时存在蓝冰和岩浆块时，启用下界岩生成",
-                    "默认：true（启用）")
+            .comment("Enable netherrack generation when lava is surrounded by both blue ice and magma blocks",
+                    "Default: true (enabled)")
             .define("netherrackGeneration", true);
 
-    // 滴水石生成设置
+    // Dripstone generation setting
     public static final ModConfigSpec.BooleanValue DRIPSTONE_GENERATION = BUILDER
-            .comment("当岩浆在花岗岩上方流动且相邻蓝冰时，启用滴水石生成",
-                    "默认：true（启用）")
+            .comment("Enable dripstone generation when lava flows above granite and adjacent to blue ice",
+                    "Default: true (enabled)")
             .define("dripstoneGeneration", true);
 
-    // 鸡蛋生成设置
+    // Egg spawn egg setting
     public static final ModConfigSpec.BooleanValue EGG_SPAWN_EGG = BUILDER
-            .comment("启用鸡蛋生成机制：向生命值为1的生物投掷鸡蛋会击杀并掉落刷怪蛋",
-                    "每超过1点生命值，概率降低10%",
-                    "默认：true（启用）")
+            .comment("Enable egg spawn mechanism: throwing eggs at mobs with 1 health will kill them and drop spawn eggs",
+                    "Probability decreases by 10% for each additional health point",
+                    "Default: true (enabled)")
             .define("eggSpawnEgg", true);
 
-    // 石制矿石生成概率（信标增强）
-    public static final ModConfigSpec.DoubleValue STONE_COAL_ORE_CHANCE = BUILDER
-            .comment("信标增强石头生成时，煤矿石的生成概率",
-                    "默认：0.15（15%）")
-            .defineInRange("stoneCoalOreChance", 0.15, 0.0, 1.0);
-    
-    public static final ModConfigSpec.DoubleValue STONE_IRON_ORE_CHANCE = BUILDER
-            .comment("信标增强石头生成时，铁矿石的生成概率",
-                    "默认：0.15（15%）")
-            .defineInRange("stoneIronOreChance", 0.15, 0.0, 1.0);
-    
-    public static final ModConfigSpec.DoubleValue STONE_REDSTONE_ORE_CHANCE = BUILDER
-            .comment("信标增强石头生成时，红石矿石的生成概率",
-                    "默认：0.08（8%）")
-            .defineInRange("stoneRedstoneOreChance", 0.08, 0.0, 1.0);
-    
-    public static final ModConfigSpec.DoubleValue STONE_LAPIS_ORE_CHANCE = BUILDER
-            .comment("信标增强石头生成时，青金石矿石的生成概率",
-                    "默认：0.06（6%）")
-            .defineInRange("stoneLapisOreChance", 0.06, 0.0, 1.0);
-    
-    public static final ModConfigSpec.DoubleValue STONE_GOLD_ORE_CHANCE = BUILDER
-            .comment("信标增强石头生成时，金矿石的生成概率",
-                    "默认：0.05（5%）")
-            .defineInRange("stoneGoldOreChance", 0.05, 0.0, 1.0);
-    
-    public static final ModConfigSpec.DoubleValue STONE_EMERALD_ORE_CHANCE = BUILDER
-            .comment("信标增强石头生成时，绿宝石矿石的生成概率",
-                    "默认：0.02（2%）")
-            .defineInRange("stoneEmeraldOreChance", 0.02, 0.0, 1.0);
-    
-    public static final ModConfigSpec.DoubleValue STONE_DIAMOND_ORE_CHANCE = BUILDER
-            .comment("信标增强石头生成时，钻石矿石的生成概率",
-                    "默认：0.01（1%）")
-            .defineInRange("stoneDiamondOreChance", 0.01, 0.0, 1.0);
+    // Custom ore lists (beacon enhanced)
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> STONE_ORE_CUSTOM_LIST = BUILDER
+            .comment("Custom stone ore list (beacon enhanced), format: block_name:chance",
+                    "Example: coal_ore:0.15,iron_ore:0.15,redstone_ore:0.08",
+                    "Supported ores: coal_ore, iron_ore, copper_ore, gold_ore, redstone_ore, lapis_ore, emerald_ore, diamond_ore",
+                    "Also supports modded ores with full ID: mekanism:tin_ore:0.12",
+                    "Default: coal_ore:0.15,iron_ore:0.15,redstone_ore:0.08,lapis_ore:0.06,gold_ore:0.05,emerald_ore:0.02,diamond_ore:0.01",
+                    "Total probability should not exceed 1.0")
+            .defineList("stoneOreCustomList", java.util.Arrays.asList(
+                    "coal_ore:0.15",
+                    "iron_ore:0.15",
+                    "redstone_ore:0.08",
+                    "lapis_ore:0.06",
+                    "gold_ore:0.05",
+                    "emerald_ore:0.02",
+                    "diamond_ore:0.01"
+            ), s -> true);
 
-    // 下界矿石生成概率（信标增强）
-    public static final ModConfigSpec.DoubleValue NETHER_QUARTZ_ORE_CHANCE = BUILDER
-            .comment("信标增强下界岩生成时，下界石英矿石的生成概率",
-                    "默认：0.40（40%）")
-            .defineInRange("netherQuartzOreChance", 0.40, 0.0, 1.0);
-    
-    public static final ModConfigSpec.DoubleValue NETHER_GOLD_ORE_CHANCE = BUILDER
-            .comment("信标增强下界岩生成时，下界金矿石的生成概率",
-                    "默认：0.25（25%）")
-            .defineInRange("netherGoldOreChance", 0.25, 0.0, 1.0);
-    
-    public static final ModConfigSpec.DoubleValue ANCIENT_DEBRIS_CHANCE = BUILDER
-            .comment("信标增强下界岩生成时，远古残骸的生成概率",
-                    "默认：0.03（3%）")
-            .defineInRange("ancientDebrisChance", 0.03, 0.0, 1.0);
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> DEEPSLATE_ORE_CUSTOM_LIST = BUILDER
+            .comment("Custom deepslate ore list (beacon enhanced), format: block_name:chance",
+                    "Example: deepslate_coal_ore:0.15,deepslate_iron_ore:0.15",
+                    "Supported ores: deepslate_coal_ore, deepslate_iron_ore, deepslate_copper_ore, deepslate_gold_ore, deepslate_redstone_ore, deepslate_lapis_ore, deepslate_emerald_ore, deepslate_diamond_ore",
+                    "Also supports modded ores with full ID: mekanism:deepslate_tin_ore:0.12",
+                    "Default: deepslate_coal_ore:0.15,deepslate_iron_ore:0.15,deepslate_redstone_ore:0.08,deepslate_lapis_ore:0.06,deepslate_gold_ore:0.05,deepslate_emerald_ore:0.02,deepslate_diamond_ore:0.01",
+                    "Total probability should not exceed 1.0")
+            .defineList("deepslateOreCustomList", java.util.Arrays.asList(
+                    "deepslate_coal_ore:0.15",
+                    "deepslate_iron_ore:0.15",
+                    "deepslate_redstone_ore:0.08",
+                    "deepslate_lapis_ore:0.06",
+                    "deepslate_gold_ore:0.05",
+                    "deepslate_emerald_ore:0.02",
+                    "deepslate_diamond_ore:0.01"
+            ), s -> true);
 
-    // 自定义生成规则设置
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> NETHER_ORE_CUSTOM_LIST = BUILDER
+            .comment("Custom nether ore list (beacon enhanced), format: block_name:chance",
+                    "Example: nether_quartz_ore:0.40,nether_gold_ore:0.25,ancient_debris:0.03",
+                    "Supported ores: nether_quartz_ore, nether_gold_ore, ancient_debris, glowstone, blackstone, basalt",
+                    "Also supports modded ores with full ID: mekanism:nether_tin_ore:0.12",
+                    "Default: nether_quartz_ore:0.40,nether_gold_ore:0.25,ancient_debris:0.005",
+                    "Total probability should not exceed 1.0")
+            .defineList("netherOreCustomList", java.util.Arrays.asList(
+                    "nether_quartz_ore:0.40",
+                    "nether_gold_ore:0.25",
+                    "ancient_debris:0.005"
+            ), s -> true);
+
+    // Custom generation rules settings
     public static final ModConfigSpec.BooleanValue ENABLE_CUSTOM_GENERATION = BUILDER
-            .comment("启用自定义方块生成规则（通过 customRules 添加）",
-                    "默认：true（启用）")
+            .comment("Enable custom block generation rules (added via customRules)",
+                    "Default: true (enabled)")
             .define("enableCustomGeneration", true);
     
     public static final ModConfigSpec.ConfigValue<List<? extends String>> CUSTOM_RULES = BUILDER
-            .comment("自定义生成规则列表，格式：输入方块->输出方块:相邻方块1,相邻方块2",
-                    "示例：obsidian->end_stone:soul_sand",
-                    "支持的原版方块：bone_block, andesite, granite, obsidian, netherrack 等",
-                    "默认：空")
-            .define("customRules", Collections.emptyList());
+            .comment("Custom generation rules list, format: input_block->output_block:adjacent_block1,adjacent_block2",
+                    "Example: obsidian->end_stone:soul_sand",
+                    "Supported vanilla blocks: bone_block, andesite, granite, obsidian, netherrack, etc.",
+                    "Default: empty")
+            .defineList("customRules", Collections.emptyList(), s -> true);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 }
