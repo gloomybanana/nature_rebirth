@@ -1,0 +1,7 @@
+{
+  "type": "nature_rebirth:dragon_breath_recipe",
+  "category": "misc",
+  "result": {
+    "item": "minecraft:dragon_breath"
+  }
+}

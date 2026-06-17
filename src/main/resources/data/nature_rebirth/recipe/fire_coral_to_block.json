@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:fire_coral",
+    "minecraft:fire_coral"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:fire_coral_block"
+  }
+}

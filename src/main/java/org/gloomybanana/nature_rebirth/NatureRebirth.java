@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
@@ -17,6 +18,9 @@ public class NatureRebirth {
 
     public NatureRebirth(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
+
+        // 注册配方序列化器
+        ModRecipes.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -33,5 +37,9 @@ public class NatureRebirth {
         
         var netherOreList = Config.NETHER_ORE_CUSTOM_LIST.get();
         LOGGER.info("Nether ore config: " + netherOreList);
+    }
+    
+    public static Identifier location(String path) {
+        return Identifier.parse(MOD_ID + ":" + path);
     }
 }
