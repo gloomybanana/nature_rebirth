@@ -11,6 +11,8 @@
   "nature_rebirth.configuration.netherOreCustomList": "Custom Nether Ore List",
   "nature_rebirth.configuration.enableCustomGeneration": "Enable Custom Generation Rules",
   "nature_rebirth.configuration.customRules": "Custom Generation Rules List",
+  "nature_rebirth.configuration.dragonBreathCrafting": "Enable Dragon Breath Crafting",
+  "nature_rebirth.configuration.endStoneConversion": "Enable End Stone Conversion",
 
   "nature_rebirth.jei.obtain": "Obtain:",
   "nature_rebirth.jei.calcite.step1": "1. Place lava above bone block",

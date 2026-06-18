@@ -11,6 +11,8 @@
   "nature_rebirth.configuration.netherOreCustomList": "自定义下界矿石列表",
   "nature_rebirth.configuration.enableCustomGeneration": "启用自定义生成规则",
   "nature_rebirth.configuration.customRules": "自定义生成规则列表",
+  "nature_rebirth.configuration.dragonBreathCrafting": "启用龙息合成",
+  "nature_rebirth.configuration.endStoneConversion": "启用末地石转换",
 
   "nature_rebirth.jei.obtain": "获取方式：",
   "nature_rebirth.jei.calcite.step1": "1. 将岩浆倒在骨块上方",
