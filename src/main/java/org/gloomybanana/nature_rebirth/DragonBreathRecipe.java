@@ -44,6 +44,11 @@ public class DragonBreathRecipe implements CraftingRecipe {
 
     @Override
     public boolean matches(CraftingInput input, Level level) {
+        // 检查配置是否启用
+        if (!Config.DRAGON_BREATH_CRAFTING.get()) {
+            return false;
+        }
+        
         boolean hasDragonHead = false;
         boolean hasGlassBottle = false;
         

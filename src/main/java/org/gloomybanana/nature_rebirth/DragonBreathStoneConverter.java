@@ -48,6 +48,11 @@ public class DragonBreathStoneConverter {
         ItemStack itemStack = event.getItemStack();
         Player player = event.getEntity();
         
+        // 检查配置是否启用
+        if (!Config.END_STONE_CONVERSION.get()) {
+            return;
+        }
+        
         // 检查是否手持龙息
         if (itemStack.getItem() != Items.DRAGON_BREATH) {
             return;

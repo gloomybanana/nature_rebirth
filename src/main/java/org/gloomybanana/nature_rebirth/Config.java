@@ -107,5 +107,19 @@ public class Config {
                     "Default: empty")
             .defineList("customRules", Collections.emptyList(), s -> true);
 
+    // Dragon breath crafting setting
+    public static final ModConfigSpec.BooleanValue DRAGON_BREATH_CRAFTING = BUILDER
+            .comment("Enable dragon breath crafting with dragon head and glass bottle",
+                    "Dragon head will not be consumed when crafting",
+                    "Default: true (enabled)")
+            .define("dragonBreathCrafting", true);
+
+    // End stone conversion setting
+    public static final ModConfigSpec.BooleanValue END_STONE_CONVERSION = BUILDER
+            .comment("Enable end stone conversion using dragon breath",
+                    "Right-click with dragon breath on stone/cobblestone/bricks to convert them to end stone variants",
+                    "Default: true (enabled)")
+            .define("endStoneConversion", true);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 }
