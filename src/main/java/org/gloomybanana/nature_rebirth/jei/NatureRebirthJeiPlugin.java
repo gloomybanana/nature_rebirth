@@ -139,6 +139,49 @@ public class NatureRebirthJeiPlugin implements IModPlugin {
         addOreInfo(registration, Blocks.NETHER_QUARTZ_ORE, "nature_rebirth.jei.ore.nether_quartz", "nether");
         addOreInfo(registration, Blocks.NETHER_GOLD_ORE, "nature_rebirth.jei.ore.nether_gold", "nether");
         addOreInfo(registration, Blocks.ANCIENT_DEBRIS, "nature_rebirth.jei.ore.ancient_debris", "nether");
+        
+        // Bedrock obtain method
+        if (Config.ANCIENT_DEBRIS_TO_BEDROCK.get()) {
+            List<Component> bedrockDesc = new ArrayList<>();
+            bedrockDesc.add(Component.translatable("nature_rebirth.jei.obtain"));
+            bedrockDesc.add(Component.translatable("nature_rebirth.jei.bedrock.step1"));
+            bedrockDesc.add(Component.translatable("nature_rebirth.jei.bedrock.step2"));
+            bedrockDesc.add(Component.translatable("nature_rebirth.jei.bedrock.step3", Config.ANCIENT_DEBRIS_CONVERSION_DELAY.get()));
+            
+            registration.addIngredientInfo(
+                    new ItemStack(Blocks.BEDROCK),
+                    VanillaTypes.ITEM_STACK,
+                    bedrockDesc.toArray(new Component[0])
+            );
+        }
+        
+        // End Stone obtain method
+        if (Config.END_STONE_CONVERSION.get()) {
+            List<Component> endStoneDesc = new ArrayList<>();
+            endStoneDesc.add(Component.translatable("nature_rebirth.jei.obtain"));
+            endStoneDesc.add(Component.translatable("nature_rebirth.jei.end_stone.step1"));
+            endStoneDesc.add(Component.translatable("nature_rebirth.jei.end_stone.step2"));
+            
+            registration.addIngredientInfo(
+                    new ItemStack(Blocks.END_STONE),
+                    VanillaTypes.ITEM_STACK,
+                    endStoneDesc.toArray(new Component[0])
+            );
+        }
+        
+        // Dragon Breath obtain method
+        if (Config.DRAGON_BREATH_CRAFTING.get()) {
+            List<Component> dragonBreathDesc = new ArrayList<>();
+            dragonBreathDesc.add(Component.translatable("nature_rebirth.jei.obtain"));
+            dragonBreathDesc.add(Component.translatable("nature_rebirth.jei.dragon_breath.step1"));
+            dragonBreathDesc.add(Component.translatable("nature_rebirth.jei.dragon_breath.step2"));
+            
+            registration.addIngredientInfo(
+                    new ItemStack(net.minecraft.world.item.Items.DRAGON_BREATH),
+                    VanillaTypes.ITEM_STACK,
+                    dragonBreathDesc.toArray(new Component[0])
+            );
+        }
     }
     
     private void addOreInfo(IRecipeRegistration registration, Block ore, String oreNameKey, String type) {

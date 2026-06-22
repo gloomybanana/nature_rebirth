@@ -13,6 +13,8 @@
   "nature_rebirth.configuration.customRules": "自定义生成规则列表",
   "nature_rebirth.configuration.dragonBreathCrafting": "启用龙息合成",
   "nature_rebirth.configuration.endStoneConversion": "启用末地石转换",
+  "nature_rebirth.configuration.ancientDebrisToBedrock": "启用远古残骸转化基岩",
+  "nature_rebirth.configuration.ancientDebrisConversionDelay": "远古残骸转化延迟（秒）",
 
   "nature_rebirth.jei.obtain": "获取方式：",
   "nature_rebirth.jei.calcite.step1": "1. 将岩浆倒在骨块上方",
@@ -65,5 +67,15 @@
   "nature_rebirth.jei.ore.deepslate_diamond": "深板岩钻石矿石",
   "nature_rebirth.jei.ore.nether_quartz": "下界石英矿石",
   "nature_rebirth.jei.ore.nether_gold": "下界金矿石",
-  "nature_rebirth.jei.ore.ancient_debris": "远古残骸"
+  "nature_rebirth.jei.ore.ancient_debris": "远古残骸",
+  
+  "nature_rebirth.jei.bedrock.step1": "1. 在4级信标周围放置远古残骸",
+  "nature_rebirth.jei.bedrock.step2": "2. 远古残骸周围出现吸收粒子效果",
+  "nature_rebirth.jei.bedrock.step3": "3. %s秒后转化为基岩并掉落",
+  
+  "nature_rebirth.jei.end_stone.step1": "1. 手持龙息右键石头/圆石/石砖类方块",
+  "nature_rebirth.jei.end_stone.step2": "2. 方块会转化为对应的末地石版本",
+  
+  "nature_rebirth.jei.dragon_breath.step1": "1. 将龙首和玻璃瓶放入工作台",
+  "nature_rebirth.jei.dragon_breath.step2": "2. 合成龙息，龙首不消耗"
 }

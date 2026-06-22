@@ -13,6 +13,8 @@
   "nature_rebirth.configuration.customRules": "Custom Generation Rules List",
   "nature_rebirth.configuration.dragonBreathCrafting": "Enable Dragon Breath Crafting",
   "nature_rebirth.configuration.endStoneConversion": "Enable End Stone Conversion",
+  "nature_rebirth.configuration.ancientDebrisToBedrock": "Enable Ancient Debris to Bedrock",
+  "nature_rebirth.configuration.ancientDebrisConversionDelay": "Ancient Debris Conversion Delay (seconds)",
 
   "nature_rebirth.jei.obtain": "Obtain:",
   "nature_rebirth.jei.calcite.step1": "1. Place lava above bone block",
@@ -65,5 +67,15 @@
   "nature_rebirth.jei.ore.deepslate_diamond": "Deepslate Diamond Ore",
   "nature_rebirth.jei.ore.nether_quartz": "Nether Quartz Ore",
   "nature_rebirth.jei.ore.nether_gold": "Nether Gold Ore",
-  "nature_rebirth.jei.ore.ancient_debris": "Ancient Debris"
+  "nature_rebirth.jei.ore.ancient_debris": "Ancient Debris",
+  
+  "nature_rebirth.jei.bedrock.step1": "1. Place ancient debris near level 4 beacon",
+  "nature_rebirth.jei.bedrock.step2": "2. Absorb particles will appear around debris",
+  "nature_rebirth.jei.bedrock.step3": "3. Converts to bedrock and drops after %s seconds",
+  
+  "nature_rebirth.jei.end_stone.step1": "1. Right-click stone/cobblestone/stone brick blocks with dragon breath",
+  "nature_rebirth.jei.end_stone.step2": "2. Block will convert to corresponding end stone variant",
+  
+  "nature_rebirth.jei.dragon_breath.step1": "1. Place dragon head and glass bottle in crafting table",
+  "nature_rebirth.jei.dragon_breath.step2": "2. Craft dragon breath, dragon head is not consumed"
 }

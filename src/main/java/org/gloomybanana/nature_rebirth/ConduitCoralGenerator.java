@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.effect.MobEffects;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -107,13 +108,13 @@ public class ConduitCoralGenerator {
         
         // 1. 处理骨粉生成珊瑚
         if (event.getItemStack().is(net.minecraft.world.item.Items.BONE_MEAL)) {
-            // 检查玩家是否在水下
-            if (!level.getFluidState(player.blockPosition()).is(net.minecraft.world.level.material.Fluids.WATER)) {
+            // 检查玩家是否具有潮涌能量效果
+            if (!player.hasEffect(MobEffects.CONDUIT_POWER)) {
                 return;
             }
             
-            // 检查是否在潮涌核心效果范围内
-            if (!isInConduitRange(level, clickedPos)) {
+            // 检查玩家附近是否有水
+            if (!hasWaterNearby(level, player.blockPosition())) {
                 return;
             }
             
@@ -181,8 +182,11 @@ public class ConduitCoralGenerator {
                 // 播放音效
                 level.playSound(null, clickedPos, SoundEvents.BONE_MEAL_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
                 
-                // 生成粒子效果
+                // 生成骨粉粒子效果
                 spawnBoneMealParticles(level, clickedPos);
+                
+                // 生成潮涌能量粒子效果
+                spawnConduitParticles(level, clickedPos);
                 
                 event.setCanceled(true);
                 event.setCancellationResult(InteractionResult.SUCCESS);
@@ -195,8 +199,13 @@ public class ConduitCoralGenerator {
         if (heldBlock != null) {
             for (Block wallFan : WALL_CORAL_FANS) {
                 if (heldBlock == wallFan) {
-                    // 检查是否在潮涌核心范围内
-                    if (!isInConduitRange(level, clickedPos)) {
+                    // 检查玩家是否具有潮涌能量效果
+                    if (!player.hasEffect(MobEffects.CONDUIT_POWER)) {
+                        return;
+                    }
+                    
+                    // 检查玩家附近是否有水
+                    if (!hasWaterNearby(level, player.blockPosition())) {
                         return;
                     }
                     
@@ -223,6 +232,7 @@ public class ConduitCoralGenerator {
                     // 播放音效和粒子
                     level.playSound(null, clickedPos, SoundEvents.BONE_MEAL_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
                     spawnBoneMealParticles(level, clickedPos);
+                    spawnConduitParticles(level, clickedPos);
                     
                     event.setCanceled(true);
                     event.setCancellationResult(InteractionResult.SUCCESS);
@@ -252,16 +262,29 @@ public class ConduitCoralGenerator {
             return;
         }
         
-        // 检查是否在潮涌核心范围内且不在复活中
+        // 检查是否在复活中
         if (REVIVING_CORALS.containsKey(pos)) {
             return;
         }
         
-        if (isInConduitRange(level, pos)) {
-            RandomSource random = level.getRandom();
-            int ticks = 20 + random.nextInt(41); // 1-3秒
-            REVIVING_CORALS.put(pos.immutable(), ticks);
+        // 检查放置珊瑚的玩家是否具有潮涌能量效果
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
         }
+        
+        if (!player.hasEffect(MobEffects.CONDUIT_POWER)) {
+            return;
+        }
+        
+        // 检查相邻范围内是否有水
+        if (!hasWaterNearby(level, pos)) {
+            return;
+        }
+        
+        // 启动复活机制
+        RandomSource random = level.getRandom();
+        int ticks = 20 + random.nextInt(41); // 1-3秒
+        REVIVING_CORALS.put(pos.immutable(), ticks);
     }
     
     /**
@@ -346,38 +369,6 @@ public class ConduitCoralGenerator {
     }
     
     /**
-     * 检查是否在潮涌核心范围内
-     */
-    private static boolean isInConduitRange(Level level, BlockPos pos) {
-        BlockPos nearbyConduit = findNearbyConduit(level, pos);
-        return nearbyConduit != null;
-    }
-    
-    /**
-     * 查找附近是否有激活的潮涌核心
-     */
-    private static BlockPos findNearbyConduit(Level level, BlockPos pos) {
-        // 在玩家/珊瑚位置附近搜索（潮涌核心范围96格）
-        int searchRadius = 96;
-        
-        for (int x = pos.getX() - searchRadius; x <= pos.getX() + searchRadius; x++) {
-            for (int y = pos.getY() - searchRadius; y <= pos.getY() + searchRadius; y++) {
-                for (int z = pos.getZ() - searchRadius; z <= pos.getZ() + searchRadius; z++) {
-                    BlockPos checkPos = new BlockPos(x, y, z);
-                    if (level.getBlockState(checkPos).is(Blocks.CONDUIT)) {
-                        // 检查是否在 96 格范围内
-                        if (checkPos.closerThan(pos, 96)) {
-                            return checkPos;
-                        }
-                    }
-                }
-            }
-        }
-        
-        return null;
-    }
-    
-    /**
      * 检查方块是否是完整方块
      */
     private static boolean isFullBlock(BlockState state) {
@@ -390,6 +381,19 @@ public class ConduitCoralGenerator {
     private static boolean canPlaceCoral(Level level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         return !state.isSolid() && level.getFluidState(pos).is(net.minecraft.world.level.material.Fluids.WATER);
+    }
+    
+    /**
+     * 检查珊瑚相邻范围内是否有水（6个方向）
+     */
+    private static boolean hasWaterNearby(Level level, BlockPos pos) {
+        // 检查上下左右前后6个方向是否有水
+        return level.getFluidState(pos.above()).is(net.minecraft.world.level.material.Fluids.WATER) ||
+               level.getFluidState(pos.below()).is(net.minecraft.world.level.material.Fluids.WATER) ||
+               level.getFluidState(pos.north()).is(net.minecraft.world.level.material.Fluids.WATER) ||
+               level.getFluidState(pos.south()).is(net.minecraft.world.level.material.Fluids.WATER) ||
+               level.getFluidState(pos.east()).is(net.minecraft.world.level.material.Fluids.WATER) ||
+               level.getFluidState(pos.west()).is(net.minecraft.world.level.material.Fluids.WATER);
     }
     
     /**
@@ -408,6 +412,43 @@ public class ConduitCoralGenerator {
                 random.nextDouble() * 0.4 + 0.1,
                 (random.nextDouble() - 0.5) * 0.4
             );
+        }
+    }
+    
+    /**
+     * 生成潮涌能量粒子效果
+     */
+    private static void spawnConduitParticles(Level level, BlockPos pos) {
+        if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            RandomSource random = level.getRandom();
+            
+            for (int i = 0; i < 15; i++) {
+                double dx = (random.nextDouble() - 0.5) * 1.5;
+                double dy = random.nextDouble() * 1.5;
+                double dz = (random.nextDouble() - 0.5) * 1.5;
+                
+                serverLevel.sendParticles(
+                    ParticleTypes.NAUTILUS,
+                    pos.getX() + 0.5,
+                    pos.getY() + 0.5,
+                    pos.getZ() + 0.5,
+                    1, dx, dy, dz, 0.1
+                );
+            }
+            
+            for (int i = 0; i < 10; i++) {
+                double dx = (random.nextDouble() - 0.5) * 1.0;
+                double dy = random.nextDouble() * 1.0;
+                double dz = (random.nextDouble() - 0.5) * 1.0;
+                
+                serverLevel.sendParticles(
+                    ParticleTypes.BUBBLE,
+                    pos.getX() + 0.5,
+                    pos.getY() + 0.5,
+                    pos.getZ() + 0.5,
+                    1, dx, dy, dz, 0.05
+                );
+            }
         }
     }
 }

@@ -121,5 +121,17 @@ public class Config {
                     "Default: true (enabled)")
             .define("endStoneConversion", true);
 
+    // Ancient debris to bedrock conversion setting
+    public static final ModConfigSpec.BooleanValue ANCIENT_DEBRIS_TO_BEDROCK = BUILDER
+            .comment("Enable ancient debris to bedrock conversion near max level beacon",
+                    "When ancient debris is placed near a level 4 beacon, it will be converted to bedrock after a delay",
+                    "Default: true (enabled)")
+            .define("ancientDebrisToBedrock", true);
+
+    public static final ModConfigSpec.IntValue ANCIENT_DEBRIS_CONVERSION_DELAY = BUILDER
+            .comment("Delay in seconds before ancient debris is converted to bedrock",
+                    "Default: 10 seconds")
+            .defineInRange("ancientDebrisConversionDelay", 10, 1, 60);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 }

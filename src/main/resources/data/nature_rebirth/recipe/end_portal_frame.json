@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "E": "minecraft:ender_pearl",
+    "B": "minecraft:bedrock",
+    "S": "minecraft:end_stone"
+  },
+  "pattern": [
+    " E ",
+    "BSB",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:end_portal_frame"
+  }
+}
