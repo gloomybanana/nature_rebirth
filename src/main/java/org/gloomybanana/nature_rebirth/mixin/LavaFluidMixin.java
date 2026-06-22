@@ -138,11 +138,11 @@ public abstract class LavaFluidMixin {
     }
     
     // 辅助方法：检查自定义生成规则
-    private boolean checkCustomGeneration(LevelAccessor level, BlockPos pos, Block inputBlock, CallbackInfo ci) {
+    private boolean checkCustomGeneration(LevelAccessor level, BlockPos pos, Block bottomBlock, CallbackInfo ci) {
         var rules = org.gloomybanana.nature_rebirth.CustomGenerationConfig.getRules();
         
         for (var rule : rules) {
-            if (rule.inputBlock == inputBlock) {
+            if (rule.bottomBlock == bottomBlock) {
                 // 检查相邻方块是否满足要求
                 boolean allAdjacentPresent = true;
                 for (Block requiredBlock : rule.requiredAdjacentBlocks) {
@@ -153,7 +153,7 @@ public abstract class LavaFluidMixin {
                 }
                 
                 if (allAdjacentPresent) {
-                    BlockState finalBlock = rule.outputBlock.defaultBlockState();
+                    BlockState finalBlock = rule.generateBlock.defaultBlockState();
                     
                     level.setBlock(pos, finalBlock, 3);
                     playEffect(level, pos);

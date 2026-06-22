@@ -101,9 +101,10 @@ public class Config {
             .define("enableCustomGeneration", true);
     
     public static final ModConfigSpec.ConfigValue<List<? extends String>> CUSTOM_RULES = BUILDER
-            .comment("Custom generation rules list, format: input_block->output_block:adjacent_block1,adjacent_block2",
+            .comment("Custom generation rules list, format: bottom_block->generate_block:adjacent_block1,adjacent_block2",
                     "Example: obsidian->end_stone:soul_sand",
-                    "Supported vanilla blocks: bone_block, andesite, granite, obsidian, netherrack, etc.",
+                    "Supports mod blocks with full ID format: modid:block_name",
+                    "Example with mod blocks: craton:rhyolite->minecraft:stone:blue_ice",
                     "Default: empty")
             .defineList("customRules", Collections.emptyList(), s -> true);
 

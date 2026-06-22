@@ -11,13 +11,13 @@ public class CustomGenerationConfig {
     
     // 生成规则类
     public static class GenerationRule {
-        public final Block inputBlock;
-        public final Block outputBlock;
+        public final Block bottomBlock;
+        public final Block generateBlock;
         public final Set<Block> requiredAdjacentBlocks;
         
-        public GenerationRule(Block inputBlock, Block outputBlock, Set<Block> requiredAdjacentBlocks) {
-            this.inputBlock = inputBlock;
-            this.outputBlock = outputBlock;
+        public GenerationRule(Block bottomBlock, Block generateBlock, Set<Block> requiredAdjacentBlocks) {
+            this.bottomBlock = bottomBlock;
+            this.generateBlock = generateBlock;
             this.requiredAdjacentBlocks = requiredAdjacentBlocks;
         }
     }
@@ -354,35 +354,35 @@ public class CustomGenerationConfig {
         
         // 添加预定义的规则（使用主配置开关）
         if (Config.CALCITE_GENERATION.get()) {
-            Block input = BLOCK_MAP.get("bone_block");
-            Block output = BLOCK_MAP.get("calcite");
+            Block bottom = BLOCK_MAP.get("bone_block");
+            Block generate = BLOCK_MAP.get("calcite");
             Set<Block> adjacent = new HashSet<>();
             adjacent.add(BLOCK_MAP.get("blue_ice"));
             
-            if (input != null && output != null) {
-                rules.add(new GenerationRule(input, output, adjacent));
+            if (bottom != null && generate != null) {
+                rules.add(new GenerationRule(bottom, generate, adjacent));
             }
         }
         
         if (Config.TUFF_GENERATION.get()) {
-            Block input = BLOCK_MAP.get("andesite");
-            Block output = BLOCK_MAP.get("tuff");
+            Block bottom = BLOCK_MAP.get("andesite");
+            Block generate = BLOCK_MAP.get("tuff");
             Set<Block> adjacent = new HashSet<>();
             adjacent.add(BLOCK_MAP.get("blue_ice"));
             
-            if (input != null && output != null) {
-                rules.add(new GenerationRule(input, output, adjacent));
+            if (bottom != null && generate != null) {
+                rules.add(new GenerationRule(bottom, generate, adjacent));
             }
         }
         
         if (Config.DRIPSTONE_GENERATION.get()) {
-            Block input = BLOCK_MAP.get("granite");
-            Block output = BLOCK_MAP.get("dripstone_block");
+            Block bottom = BLOCK_MAP.get("granite");
+            Block generate = BLOCK_MAP.get("dripstone_block");
             Set<Block> adjacent = new HashSet<>();
             adjacent.add(BLOCK_MAP.get("blue_ice"));
             
-            if (input != null && output != null) {
-                rules.add(new GenerationRule(input, output, adjacent));
+            if (bottom != null && generate != null) {
+                rules.add(new GenerationRule(bottom, generate, adjacent));
             }
         }
         
@@ -430,40 +430,45 @@ public class CustomGenerationConfig {
     // 解析单条自定义规则
     private static GenerationRule parseSingleRule(String ruleStr) {
         try {
-            // 格式: input_block->output_block:adjacent_block1,adjacent_block2
+            // 格式: bottom_block->generate_block:adjacent_block1,adjacent_block2
+            // 注意：底部方块和生成方块可以是模组方块（包含冒号），用最后一个冒号分隔生成方块和相邻方块
             String[] parts = ruleStr.split("->");
             if (parts.length != 2) {
                 return null;
             }
             
-            String inputName = parts[0].trim().toLowerCase();
-            String[] outputAndAdjacent = parts[1].split(":");
+            String bottomName = parts[0].trim();
+            String restPart = parts[1].trim();
             
-            if (outputAndAdjacent.length != 2) {
+            // 找到最后一个冒号的位置来分隔generate_block和adjacent_blocks
+            // 这样可以支持模组方块如 "modid:block"
+            int lastColonIndex = restPart.lastIndexOf(':');
+            if (lastColonIndex == -1) {
                 return null;
             }
             
-            String outputName = outputAndAdjacent[0].trim().toLowerCase();
-            String[] adjacentNames = outputAndAdjacent[1].split(",");
+            String generateName = restPart.substring(0, lastColonIndex).trim();
+            String adjacentPart = restPart.substring(lastColonIndex + 1).trim();
+            String[] adjacentNames = adjacentPart.split(",");
             
             // 使用新的解析方法，支持模组方块
-            Block inputBlock = parseBlock(inputName);
-            Block outputBlock = parseBlock(outputName);
+            Block bottomBlock = parseBlock(bottomName);
+            Block generateBlock = parseBlock(generateName);
             Set<Block> adjacentBlocks = new HashSet<>();
             
-            if (inputBlock == null || outputBlock == null) {
+            if (bottomBlock == null || generateBlock == null) {
                 return null;
             }
             
             for (String adj : adjacentNames) {
-                Block block = parseBlock(adj.trim().toLowerCase());
+                Block block = parseBlock(adj.trim());
                 if (block != null) {
                     adjacentBlocks.add(block);
                 }
             }
             
             if (!adjacentBlocks.isEmpty()) {
-                return new GenerationRule(inputBlock, outputBlock, adjacentBlocks);
+                return new GenerationRule(bottomBlock, generateBlock, adjacentBlocks);
             }
         } catch (Exception e) {
             // 忽略解析错误
