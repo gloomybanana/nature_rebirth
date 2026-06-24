@@ -77,5 +77,13 @@
   "nature_rebirth.jei.end_stone.step2": "2. 方块会转化为对应的末地石版本",
   
   "nature_rebirth.jei.dragon_breath.step1": "1. 将龙首和玻璃瓶放入工作台",
-  "nature_rebirth.jei.dragon_breath.step2": "2. 合成龙息，龙首不消耗"
+  "nature_rebirth.jei.dragon_breath.step2": "2. 合成龙息，龙首不消耗",
+  
+  "nature_rebirth.jei.craton.step1": "1. 手持岩浆倒在%s上方",
+  "nature_rebirth.jei.craton.step2": "2. 在岩浆周围放置蓝冰，岩浆会转化为对应岩石",
+  
+  "nature_rebirth.jei.mekanism.stone.step1": "1. 在Y≥%s让岩浆源与水相遇",
+  "nature_rebirth.jei.mekanism.stone.step2": "2. 在生成位置下方放置信标，有概率生成Mekanism矿石",
+  "nature_rebirth.jei.mekanism.deepslate.step1": "1. 在Y<%s让岩浆与水相遇",
+  "nature_rebirth.jei.mekanism.deepslate.step2": "2. 在生成位置下方放置信标，有概率生成深板岩Mekanism矿石"
 }

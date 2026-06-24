@@ -4,11 +4,13 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.fml.ModList;
 import org.gloomybanana.nature_rebirth.Config;
 
 import java.util.ArrayList;
@@ -181,6 +183,107 @@ public class NatureRebirthJeiPlugin implements IModPlugin {
                     VanillaTypes.ITEM_STACK,
                     dragonBreathDesc.toArray(new Component[0])
             );
+        }
+        
+        // Craton mod compatibility
+        if (ModList.get().isLoaded("craton")) {
+            addCratonCompatibilityInfo(registration);
+        }
+        
+        // Mekanism mod compatibility
+        if (ModList.get().isLoaded("mekanism")) {
+            addMekanismCompatibilityInfo(registration);
+        }
+    }
+    
+    // 添加 Craton 模组兼容方块的 JEI 信息
+    private void addCratonCompatibilityInfo(IRecipeRegistration registration) {
+        // Craton 岩石转化获取方式
+        String[] cratonBlocks = {
+            "craton:rhyolite",      // 闪长岩 -> 流纹岩
+            "craton:gneiss",        // 凝灰岩 -> 片麻岩
+            "craton:marble",        // 石英块 -> 大理岩
+            "craton:gabbro",        // 黏土 -> 辉长岩
+            "craton:pegmatite"      // 砂砾 -> 伟晶岩
+        };
+        
+        String[] baseBlocks = {
+            "minecraft:diorite",
+            "minecraft:tuff",
+            "minecraft:quartz_block",
+            "minecraft:clay",
+            "minecraft:gravel"
+        };
+        
+        for (int i = 0; i < cratonBlocks.length; i++) {
+            Block cratonBlock = BuiltInRegistries.BLOCK.getOptional(Identifier.parse(cratonBlocks[i])).orElse(null);
+            if (cratonBlock != null) {
+                List<Component> desc = new ArrayList<>();
+                desc.add(Component.translatable("nature_rebirth.jei.obtain"));
+                desc.add(Component.translatable("nature_rebirth.jei.craton.step1", baseBlocks[i]));
+                desc.add(Component.translatable("nature_rebirth.jei.craton.step2"));
+                
+                registration.addIngredientInfo(
+                        new ItemStack(cratonBlock),
+                        VanillaTypes.ITEM_STACK,
+                        desc.toArray(new Component[0])
+                );
+            }
+        }
+    }
+    
+    // 添加 Mekanism 模组兼容矿石的 JEI 信息
+    private void addMekanismCompatibilityInfo(IRecipeRegistration registration) {
+        // 石头版本的 Mekanism 矿石
+        String[] mekanismStoneOres = {
+            "mekanism:fluorite_ore",
+            "mekanism:tin_ore",
+            "mekanism:uranium_ore",
+            "mekanism:lead_ore",
+            "mekanism:osmium_ore"
+        };
+        
+        // 深板岩版本的 Mekanism 矿石
+        String[] mekanismDeepslateOres = {
+            "mekanism:deepslate_fluorite_ore",
+            "mekanism:deepslate_tin_ore",
+            "mekanism:deepslate_uranium_ore",
+            "mekanism:deepslate_lead_ore",
+            "mekanism:deepslate_osmium_ore"
+        };
+        
+        // 添加石头版本矿石的 JEI 信息
+        for (String oreId : mekanismStoneOres) {
+            Block ore = BuiltInRegistries.BLOCK.getOptional(Identifier.parse(oreId)).orElse(null);
+            if (ore != null) {
+                List<Component> desc = new ArrayList<>();
+                desc.add(Component.translatable("nature_rebirth.jei.beacon.obtain"));
+                desc.add(Component.translatable("nature_rebirth.jei.mekanism.stone.step1", Config.DEEPSLATE_Y_THRESHOLD.get()));
+                desc.add(Component.translatable("nature_rebirth.jei.mekanism.stone.step2"));
+                
+                registration.addIngredientInfo(
+                        new ItemStack(ore),
+                        VanillaTypes.ITEM_STACK,
+                        desc.toArray(new Component[0])
+                );
+            }
+        }
+        
+        // 添加深板岩版本矿石的 JEI 信息
+        for (String oreId : mekanismDeepslateOres) {
+            Block ore = BuiltInRegistries.BLOCK.getOptional(Identifier.parse(oreId)).orElse(null);
+            if (ore != null) {
+                List<Component> desc = new ArrayList<>();
+                desc.add(Component.translatable("nature_rebirth.jei.beacon.obtain"));
+                desc.add(Component.translatable("nature_rebirth.jei.mekanism.deepslate.step1", Config.DEEPSLATE_Y_THRESHOLD.get()));
+                desc.add(Component.translatable("nature_rebirth.jei.mekanism.deepslate.step2"));
+                
+                registration.addIngredientInfo(
+                        new ItemStack(ore),
+                        VanillaTypes.ITEM_STACK,
+                        desc.toArray(new Component[0])
+                );
+            }
         }
     }
     

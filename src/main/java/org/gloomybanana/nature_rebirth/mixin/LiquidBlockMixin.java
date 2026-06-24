@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.fml.ModList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -76,14 +77,53 @@ public abstract class LiquidBlockMixin {
         
         // 解析石头矿石自定义配置
         var stoneConfig = org.gloomybanana.nature_rebirth.Config.STONE_ORE_CUSTOM_LIST.get();
+        stoneOreCache = new LinkedHashMap<>();
         if (!stoneConfig.isEmpty()) {
             stoneOreCache = parseCustomOreList(stoneConfig);
         }
         
         // 解析深板岩矿石自定义配置
         var deepslateConfig = org.gloomybanana.nature_rebirth.Config.DEEPSLATE_ORE_CUSTOM_LIST.get();
+        deepslateOreCache = new LinkedHashMap<>();
         if (!deepslateConfig.isEmpty()) {
             deepslateOreCache = parseCustomOreList(deepslateConfig);
+        }
+        
+        // 如果加载了 mekanism 模组，添加预设的矿石配置
+        if (ModList.get().isLoaded("mekanism")) {
+            addMekanismOres();
+        }
+    }
+    
+    // 添加 mekanism 模组预设矿石
+    private static void addMekanismOres() {
+        // 石头版本的 mekanism 矿石
+        String[] mekanismStoneOres = {
+            "mekanism:fluorite_ore:0.07",
+            "mekanism:tin_ore:0.12",
+            "mekanism:uranium_ore:0.01",
+            "mekanism:lead_ore:0.04",
+            "mekanism:osmium_ore:0.03"
+        };
+        
+        // 深板岩版本的 mekanism 矿石
+        String[] mekanismDeepslateOres = {
+            "mekanism:deepslate_fluorite_ore:0.07",
+            "mekanism:deepslate_tin_ore:0.12",
+            "mekanism:deepslate_uranium_ore:0.01",
+            "mekanism:deepslate_lead_ore:0.04",
+            "mekanism:deepslate_osmium_ore:0.03"
+        };
+        
+        // 将 mekanism 矿石添加到现有缓存
+        if (stoneOreCache != null) {
+            Map<String, Double> mekanismStoneMap = parseCustomOreList(java.util.Arrays.asList(mekanismStoneOres));
+            stoneOreCache.putAll(mekanismStoneMap);
+        }
+        
+        if (deepslateOreCache != null) {
+            Map<String, Double> mekanismDeepslateMap = parseCustomOreList(java.util.Arrays.asList(mekanismDeepslateOres));
+            deepslateOreCache.putAll(mekanismDeepslateMap);
         }
     }
 

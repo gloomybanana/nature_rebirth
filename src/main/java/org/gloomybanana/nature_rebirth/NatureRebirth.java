@@ -10,6 +10,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.ModList;
 
 @Mod(NatureRebirth.MOD_ID)
 public class NatureRebirth {
@@ -27,6 +28,22 @@ public class NatureRebirth {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         LOGGER.info("Nature Rebirth loaded!");
+        
+        // 检测 craton 模组
+        if (ModList.get().isLoaded("craton")) {
+            LOGGER.info("========================================");
+            LOGGER.info("  Hello Craton! This is Nature Rebirth~");
+            LOGGER.info("  Craton blocks conversion rules added!");
+            LOGGER.info("========================================");
+        }
+        
+        // 检测 mekanism 模组
+        if (ModList.get().isLoaded("mekanism")) {
+            LOGGER.info("========================================");
+            LOGGER.info("  Hello Mekanism! This is Nature Rebirth~");
+            LOGGER.info("  Mekanism ores have been integrated!");
+            LOGGER.info("========================================");
+        }
         
         // 打印配置值以调试
         var stoneOreList = Config.STONE_ORE_CUSTOM_LIST.get();

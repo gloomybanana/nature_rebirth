@@ -1,0 +1,242 @@
+{
+  DataVersion: 4325,
+  size: [5I, 4I, 5I],
+  palette: [
+    {
+      Name: "minecraft:air"
+    },
+    {
+      Name: "minecraft:bone_block"
+    },
+    {
+      Name: "minecraft:lava",
+      Properties: {
+        level: "0"
+      }
+    },
+    {
+      Name: "minecraft:diorite"
+    },
+    {
+      Name: "minecraft:calcite"
+    },
+    {
+      Name: "minecraft:glass_pane"
+    }
+  ],
+  blocks: [
+    {
+      state: 5,
+      pos: [0I, 0I, 0I]
+    },
+    {
+      state: 5,
+      pos: [1I, 0I, 0I]
+    },
+    {
+      state: 5,
+      pos: [2I, 0I, 0I]
+    },
+    {
+      state: 5,
+      pos: [3I, 0I, 0I]
+    },
+    {
+      state: 5,
+      pos: [4I, 0I, 0I]
+    },
+    {
+      state: 5,
+      pos: [0I, 0I, 1I]
+    },
+    {
+      state: 5,
+      pos: [1I, 0I, 1I]
+    },
+    {
+      state: 5,
+      pos: [2I, 0I, 1I]
+    },
+    {
+      state: 5,
+      pos: [3I, 0I, 1I]
+    },
+    {
+      state: 5,
+      pos: [4I, 0I, 1I]
+    },
+    {
+      state: 5,
+      pos: [0I, 0I, 2I]
+    },
+    {
+      state: 5,
+      pos: [1I, 0I, 2I]
+    },
+    {
+      state: 5,
+      pos: [2I, 0I, 2I]
+    },
+    {
+      state: 5,
+      pos: [3I, 0I, 2I]
+    },
+    {
+      state: 5,
+      pos: [4I, 0I, 2I]
+    },
+    {
+      state: 5,
+      pos: [0I, 0I, 3I]
+    },
+    {
+      state: 5,
+      pos: [1I, 0I, 3I]
+    },
+    {
+      state: 5,
+      pos: [2I, 0I, 3I]
+    },
+    {
+      state: 5,
+      pos: [3I, 0I, 3I]
+    },
+    {
+      state: 5,
+      pos: [4I, 0I, 3I]
+    },
+    {
+      state: 5,
+      pos: [0I, 0I, 4I]
+    },
+    {
+      state: 5,
+      pos: [1I, 0I, 4I]
+    },
+    {
+      state: 5,
+      pos: [2I, 0I, 4I]
+    },
+    {
+      state: 5,
+      pos: [3I, 0I, 4I]
+    },
+    {
+      state: 5,
+      pos: [4I, 0I, 4I]
+    },
+    {
+      state: 1,
+      pos: [1I, 1I, 1I]
+    },
+    {
+      state: 1,
+      pos: [2I, 1I, 1I]
+    },
+    {
+      state: 1,
+      pos: [3I, 1I, 1I]
+    },
+    {
+      state: 1,
+      pos: [1I, 1I, 2I]
+    },
+    {
+      state: 1,
+      pos: [2I, 1I, 2I]
+    },
+    {
+      state: 1,
+      pos: [3I, 1I, 2I]
+    },
+    {
+      state: 1,
+      pos: [1I, 1I, 3I]
+    },
+    {
+      state: 1,
+      pos: [2I, 1I, 3I]
+    },
+    {
+      state: 1,
+      pos: [3I, 1I, 3I]
+    },
+    {
+      state: 3,
+      pos: [0I, 2I, 2I]
+    },
+    {
+      state: 2,
+      pos: [1I, 2I, 1I]
+    },
+    {
+      state: 2,
+      pos: [2I, 2I, 1I]
+    },
+    {
+      state: 2,
+      pos: [3I, 2I, 1I]
+    },
+    {
+      state: 2,
+      pos: [1I, 2I, 2I]
+    },
+    {
+      state: 2,
+      pos: [2I, 2I, 2I]
+    },
+    {
+      state: 2,
+      pos: [3I, 2I, 2I]
+    },
+    {
+      state: 2,
+      pos: [1I, 2I, 3I]
+    },
+    {
+      state: 2,
+      pos: [2I, 2I, 3I]
+    },
+    {
+      state: 2,
+      pos: [3I, 2I, 3I]
+    },
+    {
+      state: 4,
+      pos: [1I, 3I, 1I]
+    },
+    {
+      state: 4,
+      pos: [2I, 3I, 1I]
+    },
+    {
+      state: 4,
+      pos: [3I, 3I, 1I]
+    },
+    {
+      state: 4,
+      pos: [1I, 3I, 2I]
+    },
+    {
+      state: 4,
+      pos: [2I, 3I, 2I]
+    },
+    {
+      state: 4,
+      pos: [3I, 3I, 2I]
+    },
+    {
+      state: 4,
+      pos: [1I, 3I, 3I]
+    },
+    {
+      state: 4,
+      pos: [2I, 3I, 3I]
+    },
+    {
+      state: 4,
+      pos: [3I, 3I, 3I]
+    }
+  ],
+  entities: []
+}

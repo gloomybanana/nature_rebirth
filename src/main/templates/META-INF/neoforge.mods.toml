@@ -64,3 +64,10 @@ config="${mod_id}.mixins.json"
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="ageratum"
+    type="optional"
+    versionRange="[0.0.1,)"
+    ordering="NONE"
+    side="CLIENT"

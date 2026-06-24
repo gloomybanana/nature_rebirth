@@ -27,10 +27,16 @@ sourceSets.main.resources {
 }
 
 repositories {
+    mavenCentral()
     maven {
         // location of the maven that hosts JEI files since January 2023
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
+    }
+    maven {
+        // Ageratum maven repository
+        name = "AnvilCraft Maven"
+        url = "https://server.cjsah.net:1002/maven/"
     }
 }
 
@@ -119,6 +125,9 @@ configurations {
 dependencies {
      compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
      localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+     
+     // Ageratum - Maven 仓库依赖
+     implementation "dev.anvilcraft.resource:ageratum-neoforge-26.1.2:0.0.1+build.105"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

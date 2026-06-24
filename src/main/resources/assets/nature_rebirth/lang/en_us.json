@@ -77,5 +77,13 @@
   "nature_rebirth.jei.end_stone.step2": "2. Block will convert to corresponding end stone variant",
   
   "nature_rebirth.jei.dragon_breath.step1": "1. Place dragon head and glass bottle in crafting table",
-  "nature_rebirth.jei.dragon_breath.step2": "2. Craft dragon breath, dragon head is not consumed"
+  "nature_rebirth.jei.dragon_breath.step2": "2. Craft dragon breath, dragon head is not consumed",
+  
+  "nature_rebirth.jei.craton.step1": "1. Place lava above %s",
+  "nature_rebirth.jei.craton.step2": "2. Place blue ice around lava, lava will transform into corresponding rock",
+  
+  "nature_rebirth.jei.mekanism.stone.step1": "1. Let lava source meet water at Y≥%s",
+  "nature_rebirth.jei.mekanism.stone.step2": "2. Place beacon below generation point, chance to generate Mekanism ores",
+  "nature_rebirth.jei.mekanism.deepslate.step1": "1. Let lava meet water below Y<%s",
+  "nature_rebirth.jei.mekanism.deepslate.step2": "2. Place beacon below generation point, chance to generate deepslate Mekanism ores"
 }

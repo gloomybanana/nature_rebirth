@@ -1,0 +1,65 @@
+{
+  DataVersion: 4325,
+  size: [5I, 4I, 5I],
+  palette: [
+    {
+      Name: "minecraft:air"
+    },
+    {
+      Name: "minecraft:blue_ice"
+    },
+    {
+      Name: "minecraft:granite"
+    },
+    {
+      Name: "minecraft:dripstone_block"
+    }
+  ],
+  blocks: [
+    {
+      state: 2,
+      pos: [2I, 0I, 2I]
+    },
+    {
+      state: 1,
+      pos: [0I, 1I, 2I]
+    },
+    {
+      state: 1,
+      pos: [1I, 1I, 2I]
+    },
+    {
+      state: 1,
+      pos: [2I, 1I, 0I]
+    },
+    {
+      state: 1,
+      pos: [2I, 1I, 1I]
+    },
+    {
+      state: 1,
+      pos: [2I, 1I, 3I]
+    },
+    {
+      state: 1,
+      pos: [2I, 1I, 4I]
+    },
+    {
+      state: 1,
+      pos: [3I, 1I, 2I]
+    },
+    {
+      state: 1,
+      pos: [4I, 1I, 2I]
+    },
+    {
+      state: 0,
+      pos: [2I, 2I, 2I]
+    },
+    {
+      state: 3,
+      pos: [2I, 3I, 2I]
+    }
+  ],
+  entities: []
+}

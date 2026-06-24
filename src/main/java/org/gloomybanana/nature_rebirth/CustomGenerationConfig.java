@@ -4,6 +4,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.fml.ModList;
 
 import java.util.*;
 
@@ -386,6 +387,11 @@ public class CustomGenerationConfig {
             }
         }
         
+        // 如果加载了 craton 模组，添加预设的兼容规则
+        if (ModList.get().isLoaded("craton")) {
+            addCratonRules(rules);
+        }
+        
         // 解析自定义规则
         List<? extends String> customRulesList = Config.CUSTOM_RULES.get();
         if (customRulesList != null) {
@@ -425,6 +431,25 @@ public class CustomGenerationConfig {
         }
         
         return null;
+    }
+    
+    // 添加 craton 模组兼容规则
+    private static void addCratonRules(List<GenerationRule> rules) {
+        // 预设规则列表
+        String[] cratonRules = {
+            "diorite->craton:rhyolite:blue_ice",
+            "tuff->craton:gneiss:blue_ice",
+            "quartz_block->craton:marble:blue_ice",
+            "clay->craton:gabbro:blue_ice",
+            "gravel->craton:pegmatite:blue_ice"
+        };
+        
+        for (String ruleStr : cratonRules) {
+            GenerationRule rule = parseSingleRule(ruleStr);
+            if (rule != null) {
+                rules.add(rule);
+            }
+        }
     }
     
     // 解析单条自定义规则

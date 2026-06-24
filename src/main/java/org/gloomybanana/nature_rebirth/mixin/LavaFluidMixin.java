@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.LavaFluid;
+import net.neoforged.fml.ModList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -69,20 +70,60 @@ public abstract class LavaFluidMixin {
         
         // 解析石头矿石配置
         var stoneConfig = org.gloomybanana.nature_rebirth.Config.STONE_ORE_CUSTOM_LIST.get();
+        stoneOreList = new ArrayList<>();
         if (!stoneConfig.isEmpty()) {
             stoneOreList = parseOreConfig(stoneConfig);
         }
         
         // 解析深板岩矿石配置
         var deepslateConfig = org.gloomybanana.nature_rebirth.Config.DEEPSLATE_ORE_CUSTOM_LIST.get();
+        deepslateOreList = new ArrayList<>();
         if (!deepslateConfig.isEmpty()) {
             deepslateOreList = parseOreConfig(deepslateConfig);
         }
         
         // 解析下界矿石配置
         var netherConfig = org.gloomybanana.nature_rebirth.Config.NETHER_ORE_CUSTOM_LIST.get();
+        netherOreList = new ArrayList<>();
         if (!netherConfig.isEmpty()) {
             netherOreList = parseOreConfig(netherConfig);
+        }
+        
+        // 如果加载了 mekanism 模组，添加预设的矿石配置
+        if (ModList.get().isLoaded("mekanism")) {
+            addMekanismOres();
+        }
+    }
+    
+    // 添加 mekanism 模组预设矿石
+    private static void addMekanismOres() {
+        // 石头版本的 mekanism 矿石
+        String[] mekanismStoneOres = {
+            "mekanism:fluorite_ore:0.07",
+            "mekanism:tin_ore:0.12",
+            "mekanism:uranium_ore:0.01",
+            "mekanism:lead_ore:0.04",
+            "mekanism:osmium_ore:0.03"
+        };
+        
+        // 深板岩版本的 mekanism 矿石
+        String[] mekanismDeepslateOres = {
+            "mekanism:deepslate_fluorite_ore:0.07",
+            "mekanism:deepslate_tin_ore:0.12",
+            "mekanism:deepslate_uranium_ore:0.01",
+            "mekanism:deepslate_lead_ore:0.04",
+            "mekanism:deepslate_osmium_ore:0.03"
+        };
+        
+        // 将 mekanism 矿石添加到现有列表
+        if (stoneOreList != null) {
+            List<ConfiguredOre> mekanismStoneList = parseOreConfig(java.util.Arrays.asList(mekanismStoneOres));
+            stoneOreList.addAll(mekanismStoneList);
+        }
+        
+        if (deepslateOreList != null) {
+            List<ConfiguredOre> mekanismDeepslateList = parseOreConfig(java.util.Arrays.asList(mekanismDeepslateOres));
+            deepslateOreList.addAll(mekanismDeepslateList);
         }
     }
 
