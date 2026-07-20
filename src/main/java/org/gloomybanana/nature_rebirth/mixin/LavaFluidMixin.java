@@ -333,27 +333,57 @@ public abstract class LavaFluidMixin {
             cancellable = true)
     private void onSpreadToSetBlock(LevelAccessor level, BlockPos pos, BlockState state,
                                     Direction direction, FluidState fluidState, CallbackInfo ci) {
-        // 深板岩生成：Y坐标低于阈值
-        if (pos.getY() < org.gloomybanana.nature_rebirth.Config.DEEPSLATE_Y_THRESHOLD.get()) {
-            BlockState resultBlock = Blocks.DEEPSLATE.defaultBlockState();
-            
-            // 信标增强：有概率生成深板岩矿石
-            if (hasBeaconBelow(level, pos)) {
-                BlockState oreBlock = getDeepslateOre(level);
-                if (oreBlock != null) {
-                    resultBlock = oreBlock;
+        BlockPos belowPos = pos.below();
+        BlockState belowState = level.getBlockState(belowPos);
+
+        // 检查是否满足原版玄武岩生成条件（灵魂土 + 蓝冰），如果是则不干预，让原版处理
+        if (belowState.is(Blocks.SOUL_SOIL)) {
+            boolean hasBlueIceForBasalt = false;
+            for (Direction dir : Direction.Plane.HORIZONTAL) {
+                if (level.getBlockState(pos.relative(dir)).is(Blocks.BLUE_ICE)) {
+                    hasBlueIceForBasalt = true;
+                    break;
                 }
             }
-            
-            level.setBlock(pos, resultBlock, 3);
-            playEffect(level, pos);
-            ci.cancel();
-            return;
+            if (!hasBlueIceForBasalt && level.getBlockState(pos.above()).is(Blocks.BLUE_ICE)) {
+                hasBlueIceForBasalt = true;
+            }
+            if (hasBlueIceForBasalt) {
+                // 满足玄武岩生成条件，不干预，让原版处理
+                return;
+            }
         }
-        
+
+        // 深板岩生成：Y坐标低于阈值，且下方是自然岩石方块
+        if (pos.getY() < org.gloomybanana.nature_rebirth.Config.DEEPSLATE_Y_THRESHOLD.get()) {
+            // 检查下方是否是自然岩石方块（石头、深板岩、花岗岩、安山岩、闪长岩）
+            Block belowBlock = belowState.getBlock();
+            boolean isNaturalRock = belowBlock == Blocks.STONE ||
+                                   belowBlock == Blocks.DEEPSLATE ||
+                                   belowBlock == Blocks.GRANITE ||
+                                   belowBlock == Blocks.ANDESITE ||
+                                   belowBlock == Blocks.DIORITE;
+            if (isNaturalRock) {
+                BlockState resultBlock = Blocks.DEEPSLATE.defaultBlockState();
+
+                // 信标增强：有概率生成深板岩矿石
+                if (hasBeaconBelow(level, pos)) {
+                    BlockState oreBlock = getDeepslateOre(level);
+                    if (oreBlock != null) {
+                        resultBlock = oreBlock;
+                    }
+                }
+
+                level.setBlock(pos, resultBlock, 3);
+                playEffect(level, pos);
+                ci.cancel();
+                return;
+            }
+        }
+
         // 普通石头生成（岩浆向下流动遇水）
         BlockState resultBlock = Blocks.STONE.defaultBlockState();
-        
+
         // 信标增强：有概率生成石制矿石
         if (hasBeaconBelow(level, pos)) {
             BlockState oreBlock = getStoneOre(level);
@@ -361,7 +391,7 @@ public abstract class LavaFluidMixin {
                 resultBlock = oreBlock;
             }
         }
-        
+
         level.setBlock(pos, resultBlock, 3);
         playEffect(level, pos);
         ci.cancel();

@@ -226,10 +226,28 @@ public abstract class LiquidBlockMixin {
 
         // 只处理目标是岩浆的情况
         if (targetState.is(Blocks.LAVA)) {
+            // 检查是否满足原版玄武岩生成条件（灵魂土 + 蓝冰），如果是则不干预，让原版处理
+            BlockPos belowPos = pos.below();
+            BlockState belowState = level.getBlockState(belowPos);
+            if (belowState.is(Blocks.SOUL_SOIL)) {
+                boolean hasBlueIceForBasalt = false;
+                for (Direction direction : Direction.Plane.HORIZONTAL) {
+                    if (level.getBlockState(pos.relative(direction)).is(Blocks.BLUE_ICE)) {
+                        hasBlueIceForBasalt = true;
+                        break;
+                    }
+                }
+                if (!hasBlueIceForBasalt && level.getBlockState(pos.above()).is(Blocks.BLUE_ICE)) {
+                    hasBlueIceForBasalt = true;
+                }
+                if (hasBlueIceForBasalt) {
+                    // 满足玄武岩生成条件，不干预，让原版处理
+                    return;
+                }
+            }
+
             // 方解石生成检测：岩浆下方有骨块，且周围有蓝冰
             if (org.gloomybanana.nature_rebirth.Config.CALCITE_GENERATION.get()) {
-                BlockPos belowPos = pos.below();
-                BlockState belowState = level.getBlockState(belowPos);
                 if (belowState.is(Blocks.BONE_BLOCK)) {
                     // 检查岩浆周围（水平方向和顶部）是否有蓝冰
                     boolean hasBlueIce = false;
@@ -277,40 +295,49 @@ public abstract class LiquidBlockMixin {
                 }
             }
 
-            // 深板岩生成检测：Y坐标低于阈值
+            // 深板岩生成检测：Y坐标低于阈值，且下方是自然岩石方块
             if (pos.getY() < org.gloomybanana.nature_rebirth.Config.DEEPSLATE_Y_THRESHOLD.get()) {
-                // 检查岩浆是否是源方块
-                FluidState fluidState = level.getFluidState(pos);
-                if (!fluidState.isSource()) {
-                    BlockState resultBlock = Blocks.COBBLED_DEEPSLATE.defaultBlockState();
-                    
-                    // 信标增强：有概率生成深板岩矿石
-                    if (hasBeaconBelow(level, pos)) {
-                        BlockState oreBlock = getDeepslateOre(level);
-                        if (oreBlock != null) {
-                            resultBlock = oreBlock;
+                // 检查下方是否是自然岩石方块（石头、深板岩、花岗岩、安山岩、闪长岩）
+                Block belowBlock = belowState.getBlock();
+                boolean isNaturalRock = belowBlock == Blocks.STONE || 
+                                       belowBlock == Blocks.DEEPSLATE || 
+                                       belowBlock == Blocks.GRANITE || 
+                                       belowBlock == Blocks.ANDESITE || 
+                                       belowBlock == Blocks.DIORITE;
+                if (isNaturalRock) {
+                    // 检查岩浆是否是源方块
+                    FluidState fluidState = level.getFluidState(pos);
+                    if (!fluidState.isSource()) {
+                        BlockState resultBlock = Blocks.COBBLED_DEEPSLATE.defaultBlockState();
+                        
+                        // 信标增强：有概率生成深板岩矿石
+                        if (hasBeaconBelow(level, pos)) {
+                            BlockState oreBlock = getDeepslateOre(level);
+                            if (oreBlock != null) {
+                                resultBlock = oreBlock;
+                            }
                         }
-                    }
-                    
-                    level.setBlockAndUpdate(pos, resultBlock);
+                        
+                        level.setBlockAndUpdate(pos, resultBlock);
 
-                    // 播放音效和生成粒子
-                    if (level instanceof ServerLevel serverLevel) {
-                        serverLevel.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 0.5f, 2.0f);
-                        for (int i = 0; i < 8; ++i) {
-                            double offsetX = (serverLevel.getRandom().nextDouble() - 0.5) * 0.5;
-                            double offsetY = serverLevel.getRandom().nextDouble() * 0.5;
-                            double offsetZ = (serverLevel.getRandom().nextDouble() - 0.5) * 0.5;
-                            serverLevel.sendParticles(ParticleTypes.LAVA,
-                                    pos.getX() + 0.5 + offsetX,
-                                    pos.getY() + 0.5 + offsetY,
-                                    pos.getZ() + 0.5 + offsetZ,
-                                    1, 0.0, 0.0, 0.0, 0.0);
+                        // 播放音效和生成粒子
+                        if (level instanceof ServerLevel serverLevel) {
+                            serverLevel.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 0.5f, 2.0f);
+                            for (int i = 0; i < 8; ++i) {
+                                double offsetX = (serverLevel.getRandom().nextDouble() - 0.5) * 0.5;
+                                double offsetY = serverLevel.getRandom().nextDouble() * 0.5;
+                                double offsetZ = (serverLevel.getRandom().nextDouble() - 0.5) * 0.5;
+                                serverLevel.sendParticles(ParticleTypes.LAVA,
+                                        pos.getX() + 0.5 + offsetX,
+                                        pos.getY() + 0.5 + offsetY,
+                                        pos.getZ() + 0.5 + offsetZ,
+                                        1, 0.0, 0.0, 0.0, 0.0);
+                            }
                         }
-                    }
 
-                    cir.setReturnValue(true);
-                    return;
+                        cir.setReturnValue(true);
+                        return;
+                    }
                 }
             }
 
